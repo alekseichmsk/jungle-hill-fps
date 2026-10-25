@@ -1,11 +1,11 @@
 <!DOCTYPE html><html lang="ru"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>Hamburger Hill — concept v3.6</title>
+<title>Hamburger Hill — concept v3.7</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;700&display=swap" rel="stylesheet">
 <style>
 html,body{margin:0;height:100%;overflow:hidden;background:#000;font-family:monospace;touch-action:none;user-select:none;-webkit-user-select:none}
 #c{position:fixed;left:0;top:0;width:100%;height:calc(100% - 110px);image-rendering:pixelated}
-#gun{position:fixed;left:50%;bottom:110px;transform:translateX(-225px);width:480px;height:270px;image-rendering:pixelated;pointer-events:none}
+#gun{position:fixed;left:50%;bottom:110px;transform:translateX(-225px);width:480px;height:360px;image-rendering:pixelated;pointer-events:none}
 #hud{position:fixed;left:0;right:0;bottom:0;height:110px;background:linear-gradient(#5a4a2a,#3a2f18);border-top:4px solid #8a7444;display:flex;align-items:center;gap:6px;padding:4px;box-sizing:border-box;color:#ffd96a}
 #squad{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;flex:2;min-width:0}
 .sq{background:#221a0c;border:1px solid #8a7444;font-size:9px;padding:1px;overflow:hidden;white-space:nowrap}
@@ -84,7 +84,7 @@ text-shadow:0 4px 0 #5a0402,0 8px 0 #2a0000,4px 4px 0 #000,-4px 0 0 #ff4a20,8px 
 #items{flex-direction:row;flex-wrap:wrap;width:100%;justify-content:center;gap:6px}#msg #items button{width:auto;flex:1 1 20%;padding:6px 10px;font-size:15px}
 #panel{grid-template-columns:repeat(auto-fill,minmax(190px,1fr));margin-top:6px}#ver{display:none}}
 </style></head><body><svg width="0" height="0" style="position:absolute"><filter id="jag"><feTurbulence type="fractalNoise" baseFrequency="0.09" numOctaves="1" seed="3"/><feDisplacementMap in="SourceGraphic" scale="5"/></filter></svg>
-<canvas id="c"></canvas><canvas id="gun" width="160" height="90"></canvas><div id="cross"></div><div id="flash"></div>
+<canvas id="c"></canvas><canvas id="gun" width="160" height="120"></canvas><div id="cross"></div><div id="flash"></div>
 <div id="look"></div><div id="joy"><div id="knob"></div></div><div id="fire" class="btn">FIRE</div><div id="wsw" class="btn">ОРУЖ</div>
 <div id="hud"><div id="squad"></div><canvas id="face" width="58" height="64"></canvas>
 <div class="box">ВРЕМЯ<canvas class="dig" id="clock"></canvas>ВРАГИ <span id="en"></span></div>
@@ -94,12 +94,12 @@ text-shadow:0 4px 0 #5a0402,0 8px 0 #2a0000,4px 4px 0 #000,-4px 0 0 #ff4a20,8px 
 <div id="menu"><h1 id="logo">ВЫСОТА 937</h1><h2 id="sub2">HAMBURGER HILL</h2>
 <p id="intro">Долина Ашау, 1969. Командование называет её высотой 937. Мы зовём её просто холмом. Восемь человек. Три дня. Приказ — взять вершину. Никто не сказал, зачем.</p>
 <div id="items"><button id="start">В БОЙ</button><button id="bMis" class="mi">МИССИИ</button><button id="bSq" class="mi">ОТРЯД</button><button id="bSnd" class="mi">ЗВУК: ВКЛ</button></div>
-<div id="panel"></div><div id="ver">concept v3.6 · ПК: WASD + мышь, 1-3 оружие · Телефон: джойстик и свайп</div></div></div>
+<div id="panel"></div><div id="ver">concept v3.7 · ПК: WASD + мышь, 1-3 оружие · Телефон: джойстик и свайп</div></div></div>
 <script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js"}}</script>
 <script type="module">
 import * as THREE from 'three';
 const loadImg=src=>new Promise(r=>{const i=new Image();i.onload=()=>r(i);i.onerror=()=>r(null);i.src=src});
-const [IMG_EN,IMG_FACE,IMG_M16,IMG_PALM,IMG_BUSH,IMG_WALL,IMG_ROOF,IMG_PLANK,IMG_FIRE,IMG_TR,IMG_GF,IMG_GF2,IMG_HF,IMG_PB,IMG_SB]=await Promise.all(['enemy','face','m16_hands','palm','bush','wall','roof','planks','m16_fire','tracer','fire_grass','fire_grass2','fire_hut','palm_burn','soldier_burn'].map(n=>loadImg('sprites/'+n+'.png')));
+const [IMG_EN,IMG_FACE,IMG_M16,IMG_PALM,IMG_BUSH,IMG_WALL,IMG_ROOF,IMG_PLANK,IMG_FIRE,IMG_TR,IMG_GF,IMG_GF2,IMG_HF,IMG_PB,IMG_SB,IMG_FLI,IMG_FLF,IMG_CORPSE,IMG_SCORCH]=await Promise.all(['enemy','face','m16_hands','palm','bush','wall','roof','planks','m16_fire','tracer','fire_grass','fire_grass2','fire_hut','palm_burn','soldier_burn','flamer_idle','flamer_fire','corpse','scorch'].map(n=>loadImg('sprites/'+n+'.png')));
 const tv=document.getElementById('tv');
 let AC=null,NB=null,master,flameG,lastStep=0;
 function initAudio(){if(AC)return;AC=new (window.AudioContext||window.webkitAudioContext)();master=AC.createGain();master.gain.value=.5;master.connect(AC.destination);
@@ -182,13 +182,13 @@ const pm={blood:new THREE.MeshBasicMaterial({color:0xcc1010}),gib:new THREE.Mesh
 function part(x,y,z,m,n,sp,life){for(let i=0;i<n;i++){const o=new THREE.Mesh(pg,m);o.position.set(x,y,z);const s=sp*(.5+Math.random());o.userData={v:new THREE.Vector3((Math.random()-.5)*s,Math.random()*s,(Math.random()-.5)*s),l:life*(.5+Math.random()),g:m!==pm.fire&&m!==pm.fire2};if(m===pm.gib)o.scale.setScalar(2.2);S.add(o);parts.push(o)}}
 function splat(x,z){const d=new THREE.Mesh(new THREE.CircleGeometry(.3+Math.random()*.5,6),pm.blood);d.rotation.x=-Math.PI/2;d.position.set(x+(Math.random()-.5),.03,z+(Math.random()-.5));S.add(d)}
 const gc=document.getElementById('gun').getContext('2d');
-function drawGun(t){gc.clearRect(0,0,160,90);const bob=Math.sin(t*8)*(moving?3:0),k=muzzle>0?4:0;const R_=(c,x,y,w,h)=>{gc.fillStyle=c;gc.fillRect(x,y+bob+k,w,h)};
+function drawGun(t){gc.setTransform(1,0,0,1,0,0);gc.clearRect(0,0,160,120);gc.translate(0,30);const bob=Math.sin(t*8)*(moving?3:0),k=muzzle>0?4:0;const R_=(c,x,y,w,h)=>{gc.fillStyle=c;gc.fillRect(x,y+bob+k,w,h)};
 if(muzzle>0&&P.w==0&&IMG_M16&&!IMG_FIRE){const y=26+bob+k,F=(c,x,yy,w,h)=>{gc.fillStyle=c;gc.fillRect(x,yy,w,h)};if(Math.random()<.5){F('#ff9a20',71,y-8,9,10);F('#ff9a20',67,y-4,17,3);F('#ffe060',73,y-6,5,7);F('#fff',74,y-4,3,3)}else{F('#ff9a20',70,y-10,3,3);F('#ff9a20',78,y-10,3,3);F('#ff9a20',72,y-7,7,8);F('#ffe060',73,y-5,5,5);F('#fff',74,y-3,3,2)}}else if(muzzle>0&&!W[P.w].fire){gc.fillStyle='#ffe060';gc.beginPath();gc.moveTo(65,8+bob);gc.lineTo(50,30+bob);gc.lineTo(80,30+bob);gc.fill()}
 if(P.w==0&&IMG_M16){if(muzzle>0&&IMG_FIRE)gc.drawImage(IMG_FIRE,0,7+bob+k);else gc.drawImage(IMG_M16,0,90-71+6+bob+k)}else if(P.w==0){R_('#222',60,25,10,40);R_('#333',56,50,18,40);R_('#111',62,15,6,14);R_('#5a3a1a',50,70,10,20)}
 if(P.w==1){R_('#333',57,20,8,50);R_('#333',65,20,8,50);R_('#6a4a2a',54,60,22,30)}
 if(P.w==3){R_('#2a2a2a',68,38,10,8);R_('#3a3a3a',66,44,14,22);R_('#1a1a1a',70,34,6,6);R_('#5a3a1a',67,58,12,10);R_('#c89a6a',58,62,30,18);R_('#2e3e1e',56,78,34,12);if(muzzle>0){R_('#ffe060',67,24,12,10);R_('#fff',70,27,6,4)}}
-if(P.w==2){R_('#555',58,28,14,40);R_('#7a7a3a',48,55,34,35);R_('#222',62,18,6,12);if(firing&&W[2].ammo>0){R_('#ff8a10',58,4,14,14);R_('#ffe040',62,8,6,6)}}
-if(P.w)R_('#c89a6a',40,72,22,18);if(P.w)R_('#c89a6a',72,62,18,16);if(P.w)R_('#2e3e1e',36,82,30,8)}
+if(P.w==2&&IMG_FLI){const fy=bob+k;if(firing&&W[2].ammo>0&&IMG_FLF&&Math.floor(t*16)%2)gc.drawImage(IMG_FLF,150-IMG_FLF.width+6,96-IMG_FLF.height+fy);else gc.drawImage(IMG_FLI,8,96-IMG_FLI.height+fy)}else if(P.w==2){R_('#555',58,28,14,40);R_('#7a7a3a',48,55,34,35);R_('#222',62,18,6,12);if(firing&&W[2].ammo>0){R_('#ff8a10',58,4,14,14);R_('#ffe040',62,8,6,6)}}
+if(P.w&&!(P.w==2&&IMG_FLI)){R_('#c89a6a',40,72,22,18);R_('#c89a6a',72,62,18,16);R_('#2e3e1e',36,82,30,8)}}
 const fc=document.getElementById('face').getContext('2d');
 function drawFace(){if(IMG_FACE){const h=P.hp,F=(c,x,y,w,hh)=>{fc.fillStyle=c;fc.fillRect(x,y,w,hh)};fc.clearRect(0,0,58,64);fc.drawImage(IMG_FACE,0,0);
 if(h<70){F('#b00',14,30,4,6);F('#900',40,44,3,8)}if(h<40){F('#c00',24,20,8,4);F('#a00',10,46,6,6)}if(h<=0){fc.fillStyle='rgba(120,0,0,.6)';fc.fillRect(0,0,58,64)}return}
@@ -240,7 +240,7 @@ const FL=[0,1,2,3].map(flameTex);
 function sheetT(img){if(!img)return null;const w=img.width/4;return [0,1,2,3].map(i=>{const c=document.createElement('canvas');c.width=w;c.height=img.height;c.getContext('2d').drawImage(img,-i*w,0);const t=new THREE.CanvasTexture(c);t.magFilter=t.minFilter=THREE.NearestFilter;t.colorSpace=THREE.SRGBColorSpace;t.userData={asp:w/img.height};return t})}
 const GF=sheetT(IMG_GF),GF2=sheetT(IMG_GF2),HF=sheetT(IMG_HF),PB=sheetT(IMG_PB),SB=sheetT(IMG_SB);
 const fires=[];let fireT=0;
-const scorchM=new THREE.MeshBasicMaterial({color:0x1a140c,transparent:true,opacity:.85,depthWrite:false});
+const scorchM=IMG_SCORCH?new THREE.MeshLambertMaterial({map:(()=>{const t=new THREE.Texture(IMG_SCORCH);t.needsUpdate=true;t.magFilter=t.minFilter=THREE.NearestFilter;t.colorSpace=THREE.SRGBColorSpace;return t})(),transparent:true,alphaTest:.5,depthWrite:false}):new THREE.MeshBasicMaterial({color:0x1a140c,transparent:true,opacity:.85,depthWrite:false});
 const smokeM=new THREE.MeshBasicMaterial({color:0x3a3a36,transparent:true,opacity:.6});
 function addFlame(x,y,z,sc,set){set=set||FL;const s=new THREE.Sprite(new THREE.SpriteMaterial({map:set[0],transparent:true,alphaTest:.3,fog:false}));s.userData.set=set;const asp=set[0].userData&&set[0].userData.asp||.7;s.scale.set(sc*asp,sc,1);s.position.set(x,y+sc/2,z);s.userData.ph=Math.random()*4;S.add(s);return s}
 function smoke(x,y,z){const o=new THREE.Mesh(pg,smokeM);o.scale.setScalar(3+Math.random()*3);o.position.set(x+(Math.random()-.5)*.5,y,z+(Math.random()-.5)*.5);o.userData={v:new THREE.Vector3((Math.random()-.5)*.4,1+Math.random(),(Math.random()-.5)*.4),l:1.5+Math.random(),g:false};S.add(o);parts.push(o)}
@@ -254,9 +254,9 @@ const nx=p.x+Math.cos(e.dir)*3.2*dt,nz=p.z+Math.sin(e.dir)*3.2*dt;if(!blocked(nx
 e.s.material.map=SB?SB[Math.floor(e.walk*3)%4]:(Math.floor(e.walk*4)%2?ET[3]:ET[2]);if(e.fl)e.fl.position.set(p.x,.95,p.z);if(Math.random()<dt*6)smoke(p.x,1.6,p.z);
 for(const o of enemies)if(o!==e&&o.alive&&!(o.burn>0)&&o.s.position.distanceTo(p)<1.4)igniteEnemy(o);
 if(Math.random()<dt*3)igniteGround(p.x,p.z);
-if(e.burn<=0){e.alive=false;stopScream(e);if(e.fl)S.remove(e.fl);e.s.material.map=CORPSE;e.s.scale.set(1.8,1.0,1);e.s.position.y=.35;e.corpse=true;corpses.push(e);SFX.hit()}}
+if(e.burn<=0){e.alive=false;stopScream(e);if(e.fl)S.remove(e.fl);e.s.material.map=CORPSE;if(IMG_CORPSE){e.s.scale.set(2.2,2.2*IMG_CORPSE.height/IMG_CORPSE.width,1);e.s.position.y=.42}else{e.s.scale.set(1.8,1.0,1);e.s.position.y=.35}e.corpse=true;corpses.push(e);SFX.hit()}}
 const corpses=[];
-const CORPSE=tex(IMG_EN?IMG_EN.height:24,IMG_EN?IMG_EN.width:16,g=>{const W_=IMG_EN?IMG_EN.width:16,H_=IMG_EN?IMG_EN.height:24;g.translate(0,W_);g.rotate(-Math.PI/2);if(IMG_EN)g.drawImage(IMG_EN,0,0);else{g.fillStyle='#333';g.fillRect(3,0,10,24)}
+const CORPSE=IMG_CORPSE?(()=>{const t=new THREE.Texture(IMG_CORPSE);t.needsUpdate=true;t.magFilter=t.minFilter=THREE.NearestFilter;t.colorSpace=THREE.SRGBColorSpace;return t})():tex(IMG_EN?IMG_EN.height:24,IMG_EN?IMG_EN.width:16,g=>{const W_=IMG_EN?IMG_EN.width:16,H_=IMG_EN?IMG_EN.height:24;g.translate(0,W_);g.rotate(-Math.PI/2);if(IMG_EN)g.drawImage(IMG_EN,0,0);else{g.fillStyle='#333';g.fillRect(3,0,10,24)}
 g.setTransform(1,0,0,1,0,0);g.globalCompositeOperation='source-atop';g.fillStyle='rgba(18,12,8,.88)';g.fillRect(0,0,H_,W_);g.fillStyle='rgba(255,90,0,.5)';for(let i=0;i<12;i++)g.fillRect(Math.random()*H_,Math.random()*W_,2,1)});
 function updateFires(dt){fireT+=dt;const fr=Math.floor(fireT*10);
 for(let i=fires.length-1;i>=0;i--){const f=fires[i];f.t-=dt;f.fl.forEach((s,k)=>{const st=s.userData.set||FL;s.material.map=st[(fr+k+(s.userData.ph|0))%st.length]});if(f.kind=='solid'&&f.so.kind=='palm'&&PB)f.so.meshes[0].material.map=PB[Math.min(3,Math.floor((8-f.t)/2))];
@@ -267,7 +267,7 @@ for(const so of solids)if(!so.burning&&!so.burnt&&Math.hypot(so.x-f.x,so.z-f.z)<
 for(const e of enemies)if(e.alive&&!(e.burn>0)&&Math.hypot(e.s.position.x-f.x,e.s.position.z-f.z)<(f.kind=='solid'?2.6:.9))igniteEnemy(e);
 if(Math.hypot(P.x-f.x,P.z-f.z)<(f.kind=='solid'?2.4:.7)&&DEMO!='fire'){P.hp-=8*dt}
 if(f.t<=0){f.fl.forEach(s=>S.remove(s));fires.splice(i,1);
-if(f.kind=='grass'){const d=new THREE.Mesh(new THREE.CircleGeometry(.6+Math.random()*.4,7),scorchM);d.rotation.x=-Math.PI/2;d.position.set(f.x,.025,f.z);S.add(d)}
+if(f.kind=='grass'){const sz=1.3+Math.random()*.7,d=new THREE.Mesh(IMG_SCORCH?new THREE.PlaneGeometry(sz,sz*IMG_SCORCH.height/IMG_SCORCH.width):new THREE.CircleGeometry(sz/2,7),scorchM);d.rotation.z=Math.random()*6.28;d.rotation.x=-Math.PI/2;d.position.set(f.x,.02+Math.random()*.01,f.z);S.add(d)}
 else{f.so.burning=false;f.so.burnt=true;if(f.so.kind=='palm'&&PB){f.so.meshes[0].material.map=PB[3];f.so.meshes[0].material.color.setHex(0x3a3330)}else f.so.meshes.forEach(m=>m.material.color.setHex(0x4a3a30))}}}
 // flame particles ignite
 for(const q of parts){if(!q.userData.burn||q.userData.done)continue;const p=q.position;
@@ -327,6 +327,8 @@ if(DEMO=='pistol'){P.w=3;P.z=-4}
 if(DEMO=='burn'){P.z=-2;P.x=0;enemies.forEach((e,i)=>{if(i<2){e.s.position.set(-2+i*4,.9,-9)}else e.s.position.x+=60});setTimeout(()=>enemies.slice(0,2).forEach(igniteEnemy),200)}
 if(DEMO=='corpse'){P.z=-2;enemies.forEach((e,i)=>{if(i<2){e.s.position.set(-1.5+i*3,.9,-6)}else e.s.position.x+=60});setTimeout(()=>enemies.slice(0,2).forEach(e=>{igniteEnemy(e);e.burn=.05}),200)}
 if(DEMO=='palm'){P.x=0;P.z=-2;P.w=2;firing=true;const so=solids.filter(x=>x.kind=='palm').sort((a,b)=>Math.hypot(a.x,a.z+2)-Math.hypot(b.x,b.z+2))[0];P.yaw=Math.atan2(-(so.x-P.x),-(so.z-P.z));setTimeout(()=>{firing=false;igniteSolid(so)},300)}
+if(DEMO=='flameidle'){P.w=2;P.z=-4}
+if(DEMO=='pistolfire'){P.w=3;P.z=-4;firing=true}
 if(DEMO=='win'){enemies.forEach(e=>{e.alive=false;S.remove(e.s)})}}
 let last=performance.now(),T=0;
 function loop(now){const dt=Math.max(0,Math.min(.05,(now-last)/1000));muzzle-=dt;if(!firing)muzzle=0;last=now;T+=dt;
