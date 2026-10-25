@@ -61,7 +61,7 @@ def test_weapon_switching_allowed(make,m):
     g=start(make,m);g.T('t.freeze()')
     for k in range(5):
         before=g.T('t.P.w');g.page.keyboard.press(str(k+1));g.wait(60);after=g.T('t.P.w')
-        assert after==(k if k in ALLOW[m] else before),(k,before,after)
+        assert after==(ALLOW[m][k] if k<len(ALLOW[m]) else before),(k,before,after)
     assert g.T('t.ALLOW')==ALLOW[m]
 
 def test_firing_reduces_ammo(make):
