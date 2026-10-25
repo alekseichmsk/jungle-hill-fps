@@ -1,6 +1,6 @@
 <!DOCTYPE html><html lang="ru"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>Hamburger Hill — concept v4.0</title>
+<title>Hamburger Hill — concept v4.1</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;700&display=swap" rel="stylesheet">
 <style>
 html,body{margin:0;height:100%;overflow:hidden;background:#000;font-family:monospace;touch-action:none;user-select:none;-webkit-user-select:none}
@@ -127,7 +127,7 @@ text-shadow:0 4px 0 #5a0402,0 8px 0 #2a0000,4px 4px 0 #000,-4px 0 0 #ff4a20,8px 
 <div id="menu"><h1 id="logo">ВЫСОТА 937</h1><h2 id="sub2">HAMBURGER HILL</h2>
 <p id="intro">Долина Ашау, 1969. Командование называет её высотой 937. Мы зовём её просто холмом. Восемь человек. Три дня. Приказ — взять вершину. Никто не сказал, зачем.</p>
 <div id="items"><button id="start">В БОЙ</button><button id="bMis" class="mi">МИССИИ</button><button id="bSq" class="mi">ОТРЯД</button><button id="bSnd" class="mi">ЗВУК: ВКЛ</button></div>
-<div id="panel"></div><div id="ver">concept v4.0 · ПК: WASD + мышь, 1-5 оружие · Телефон: джойстик и свайп</div></div></div>
+<div id="panel"></div><div id="ver">concept v4.1 · ПК: WASD + мышь, 1-5 оружие · Телефон: джойстик и свайп</div></div></div>
 <script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js"}}</script>
 <script type="module">
 import * as THREE from 'three';
@@ -282,7 +282,7 @@ const smokeM=new THREE.MeshBasicMaterial({color:0x3a3a36,transparent:true,opacit
 function addFlame(x,y,z,sc,set){set=set||FL;const s=new THREE.Sprite(new THREE.SpriteMaterial({map:set[0],transparent:true,alphaTest:.3,fog:false}));s.userData.set=set;const asp=set[0].userData&&set[0].userData.asp||.7;s.scale.set(sc*asp,sc,1);s.position.set(x,y+sc/2,z);s.userData.ph=Math.random()*4;S.add(s);return s}
 function smoke(x,y,z){const o=new THREE.Mesh(pg,smokeM);o.scale.setScalar(3+Math.random()*3);o.position.set(x+(Math.random()-.5)*.5,y,z+(Math.random()-.5)*.5);o.userData={v:new THREE.Vector3((Math.random()-.5)*.4,1+Math.random(),(Math.random()-.5)*.4),l:1.5+Math.random(),g:false};S.add(o);parts.push(o)}
 function fireNear(x,z,r){return fires.some(f=>Math.hypot(f.x-x,f.z-z)<r)}
-function igniteGround(x,z){if(fires.length>70||Math.abs(x-12)<3.2||Math.abs(x)>37||Math.abs(z)>37||fireNear(x,z,.9))return;fires.push({x,z,t:2.5+Math.random()*1.5,kind:'grass',fl:[addFlame(x,-.05,z,.7+Math.random()*.4,GF?(Math.random()<.5?GF:GF2):null)],sp:.4+Math.random()*.4})}
+function igniteGround(x,z){if(fires.length>70||(!MID&&Math.abs(x-12)<3.2)||(MC&&MC.water&&MC.water(x,z))||Math.abs(x)>37||Math.abs(z)>37||fireNear(x,z,.9))return;fires.push({x,z,t:2.5+Math.random()*1.5,kind:'grass',fl:[addFlame(x,-.05,z,.7+Math.random()*.4,GF?(Math.random()<.5?GF:GF2):null)],sp:.4+Math.random()*.4})}
 function igniteSolid(so){if(so.burnt||so.burning)return;so.burning=true;const fl=[];if(so.kind=='palm'&&PB){so.meshes[0].scale.x=so.meshes[0].scale.y*PB[0].userData.asp;so.meshes[0].material.map=PB[0]}else{const n=so.kind=='hut'?(HF?4:6):3;for(let i=0;i<n;i++){const a=i/n*6.28+Math.random()*.5,rr=so.kind=='hut'?2.2:.4;fl.push(so.kind=='hut'&&HF?addFlame(so.x+Math.cos(a)*rr,-.1,so.z+Math.sin(a)*rr,3.2+Math.random(),HF):addFlame(so.x+Math.cos(a)*rr,Math.random()*so.h,so.z+Math.sin(a)*rr,so.kind=='hut'?1.6:1.4))}}
 fires.push({x:so.x,z:so.z,t:8,kind:'solid',so,fl,sp:1})}
 function igniteEnemy(e){if(e.burn>0||!e.alive)return;e.burn=4;e.zz=0;if(SB){e.fl=null;e.s.scale.set(1.9*SB[0].userData.asp,1.9,1);e.s.position.y=.95}else e.fl=addFlame(e.s.position.x,.2,e.s.position.z,1.5);startScream(e)}
@@ -481,7 +481,7 @@ function updateAllies(dt){for(const a of allies){if(squadHP[a.i]<=0)continue;con
  let tg=null,td=22;for(const e of enemies){if(!e.alive||e.dorm||(e.type=='tun'&&e.rise<1))continue;const d=Math.hypot(e.s.position.x-p.x,e.s.position.z-p.z);if(d<td){td=d;tg=e}}
  const fx=-Math.sin(P.yaw),fz=-Math.cos(P.yaw),rx=Math.cos(P.yaw),rz=-Math.sin(P.yaw);const gx=P.x+rx*a.off[0]-fx*a.off[1],gz=P.z+rz*a.off[0]-fz*a.off[1];
  const dx=gx-p.x,dz=gz-p.z,dd=Math.hypot(dx,dz);let mv=false;
- if(!tg&&dd>1){const sp=Math.min(dd,5.2*dt),nx=p.x+dx/dd*sp,nz=p.z+dz/dd*sp;if(!walkB(nx,nz)){p.x=nx;p.z=nz}else if(dd>14){p.x=gx;p.z=gz}mv=true;a.walk+=dt}
+ if(!tg&&dd>1){const sp=Math.min(dd,5.2*dt),nx=p.x+dx/dd*sp,nz=p.z+dz/dd*sp;if(!walkB(nx,nz)){p.x=nx;p.z=nz;a.stuck=0}else{a.stuck=(a.stuck||0)+dt;const sx=p.x+dz/dd*sp,sz=p.z-dx/dd*sp;if(!walkB(sx,sz)){p.x=sx;p.z=sz}if(a.stuck>1.2||dd>14){if(!walkB(gx,gz)){p.x=gx;p.z=gz}a.stuck=0}}mv=true;a.walk+=dt}
  else if(tg&&dd>9){const sp=2*dt,nx=p.x+dx/dd*sp,nz=p.z+dz/dd*sp;if(!walkB(nx,nz)){p.x=nx;p.z=nz}}
  a.fl-=dt;if(tg){a.aim+=dt;a.cd-=dt;_v.set(tg.s.position.x,1,tg.s.position.z).project(cam);const me=p.clone().project(cam);const flip=(_v.x<me.x)!==(me.z>1);a.s.scale.x=(flip?-1:1)*Math.abs(a.s.scale.x);
   if(a.aim>.5&&a.cd<0){a.cd=.9+Math.random()*.9;a.fl=.1;const ex=tg.s.position.x-p.x,ez=tg.s.position.z-p.z,el=Math.hypot(ex,ez);
@@ -595,6 +595,20 @@ if(DEMO=='palm'){P.x=0;P.z=-2;P.w=2;firing=true;const so=solids.filter(x=>x.kind
 if(DEMO=='flameidle'){P.w=2;P.z=-4}
 if(DEMO=='pistolfire'){P.w=3;P.z=-4;firing=true}
 if(DEMO=='win'){enemies.forEach(e=>{e.alive=false;S.remove(e.s)})}}
+
+// ---------- test hook (?test=1) ----------
+if(Q.has('test'))window.__test={
+ get P(){return P},get W(){return W},get enemies(){return enemies},get allies(){return allies},get MC(){return MC},get solids(){return solids},get fires(){return fires},get corpses(){return corpses},get shots(){return shots},
+ get ALLOW(){return ALLOW},get MID(){return MID},get oi(){return oi},get over(){return over},get started(){return started},get mus(){return window.__MUS?{amb:__MUS.amb.gain.value,act:__MUS.act.gain.value}:null},
+ get voxOn(){return voxOn},get musOn(){return musOn},get vcur(){return vcur?vcur._id:null},get squadHP(){return squadHP},get time(){return time},
+ setFiring(v){firing=v},shoot,hit,igniteEnemy,igniteSolid,igniteGround,say,
+ teleport(x,z,yaw){P.x=x;P.z=z;if(yaw!==undefined)P.yaw=yaw},
+ lookAt(x,z){P.yaw=Math.atan2(-(x-P.x),-(z-P.z));P.pitch=0},
+ killAll(type){enemies.forEach(e=>{if(e.alive&&(!type||e.type==type)){e.dorm=false;if(e.type=='tun'){e.rise=1}hit(e,9999,e.s.position.clone().setY(1))}})},
+ completeCurrent(){const o=MC.obj[oi];if(!o)return;if(o.t=='reach'){P.x=o.x;P.z=o.z}else if(o.t=='kill')this.killAll(o.type);else if(o.t=='killall')this.killAll();else if(o.t=='find'){const m=MC.marty.position;P.x=m.x+1;P.z=m.z}else if(o.t=='burn')MC.caches.forEach(c=>igniteSolid(c));else if(o.t=='hold'){P.x=o.x;P.z=o.z;holdT=o.dur}},
+ freeze(){enemies.forEach(e=>{e.cd=1e9})},
+ god(){P.hp=1e9}
+};
 let last=performance.now(),T=0;
 function loop(now){const dt=Math.max(0,Math.min(.05,(now-last)/1000));muzzle-=dt;if(!firing)muzzle=0;last=now;T+=dt;
 if(started&&!over){time+=dt*2;updatePlayer(dt);updateEnemies(dt);if(AC&&!MUS)initMusic();if(firing||enemies.some(e=>e.alive&&e.aiming))combatPing();if(MID)updateAllies(dt);shotCd-=dt;if(firing&&shotCd<=0){shoot();shotCd=W[P.w].rate}}else updatePlayer(0);

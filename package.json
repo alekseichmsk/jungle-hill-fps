@@ -1,0 +1,10 @@
+{
+  "name": "jungle-hill-fps",
+  "version": "4.1.0",
+  "private": true,
+  "scripts": {
+    "serve": "python3 -m http.server 8931",
+    "test": "python3 -m pytest tests -q",
+    "test:live": "BASE_URL=https://alekseichmsk.github.io/jungle-hill-fps/ python3 -m pytest tests -q"
+  }
+}

@@ -1,3 +1,5 @@
 shot_*.png
 *.zip
 trailer_src_*.png
+__pycache__/
+.pytest_cache/
