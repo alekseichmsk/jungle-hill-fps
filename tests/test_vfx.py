@@ -50,7 +50,7 @@ def test_kill_spawns_gibs_and_decals_persist(make):
     g.until('t.ipAlive()==0',timeout=8000);assert g.T('t.vfx.decals.length')>d0
 
 def test_bullet_impacts_and_brass(make):
-    g=start(make,1);calm(g);g.T('(t.P.w=0,t.P.pitch=-.6,1)')
+    g=start(make,1);calm(g);g.T('(t.P.w=0,t.P.pitch=-.6,1)');g.wait(200)
     g.T('t.shoot()');assert g.T('t.ipAlive()')>0,'no dirt puff on ground hit';assert g.T('t.vfx.shells.length')==1
     g.wait(900);assert g.T('t.vfx.shells.length')==0
     g.T('(t.P.w=2,1)');g.T('t.shoot()');assert g.T('t.vfx.shells.length')==0,'flamethrower must not eject brass'
