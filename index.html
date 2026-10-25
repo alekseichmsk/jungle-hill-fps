@@ -1,6 +1,6 @@
 <!DOCTYPE html><html lang="ru"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>Hamburger Hill — concept v3.7</title>
+<title>Hamburger Hill — concept v3.8</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;700&display=swap" rel="stylesheet">
 <style>
 html,body{margin:0;height:100%;overflow:hidden;background:#000;font-family:monospace;touch-action:none;user-select:none;-webkit-user-select:none}
@@ -83,6 +83,18 @@ text-shadow:0 4px 0 #5a0402,0 8px 0 #2a0000,4px 4px 0 #000,-4px 0 0 #ff4a20,8px 
 @media (max-height:500px){#menu{padding:4px 10px;max-width:900px}#logo{font-size:clamp(24px,11vh,44px)}#sub2{margin:2px 0}
 #items{flex-direction:row;flex-wrap:wrap;width:100%;justify-content:center;gap:6px}#msg #items button{width:auto;flex:1 1 20%;padding:6px 10px;font-size:15px}
 #panel{grid-template-columns:repeat(auto-fill,minmax(190px,1fr));margin-top:6px}#ver{display:none}}
+
+/* v3.8 missions layout */
+#panel{width:min(720px,96%);margin-left:auto;margin-right:auto}
+#panel.mis{grid-template-columns:1fr;max-width:720px}
+#panel.mis .card{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;height:auto}
+#panel .mn{display:inline-flex;align-items:center;justify-content:center;width:clamp(22px,4vh,30px);aspect-ratio:1;background:#14160c;color:#ffe070;font-weight:700;box-shadow:inset 2px 2px 0 #4a5238}
+#panel .mt{display:flex;flex-direction:column;min-width:0}
+#panel .mt small{font-size:.85em;color:#b8b090;white-space:normal}
+#panel .ms{font-size:1em}
+#panel img,#panel canvas{object-fit:contain;image-rendering:pixelated;aspect-ratio:1}
+#tv{object-fit:cover}
+@media (max-height:500px){#items{max-width:720px;margin:0 auto}#panel.mis .card{padding:3px 6px}#panel.mis{grid-template-columns:1fr 1fr}}
 </style></head><body><svg width="0" height="0" style="position:absolute"><filter id="jag"><feTurbulence type="fractalNoise" baseFrequency="0.09" numOctaves="1" seed="3"/><feDisplacementMap in="SourceGraphic" scale="5"/></filter></svg>
 <canvas id="c"></canvas><canvas id="gun" width="160" height="120"></canvas><div id="cross"></div><div id="flash"></div>
 <div id="look"></div><div id="joy"><div id="knob"></div></div><div id="fire" class="btn">FIRE</div><div id="wsw" class="btn">ОРУЖ</div>
@@ -94,7 +106,7 @@ text-shadow:0 4px 0 #5a0402,0 8px 0 #2a0000,4px 4px 0 #000,-4px 0 0 #ff4a20,8px 
 <div id="menu"><h1 id="logo">ВЫСОТА 937</h1><h2 id="sub2">HAMBURGER HILL</h2>
 <p id="intro">Долина Ашау, 1969. Командование называет её высотой 937. Мы зовём её просто холмом. Восемь человек. Три дня. Приказ — взять вершину. Никто не сказал, зачем.</p>
 <div id="items"><button id="start">В БОЙ</button><button id="bMis" class="mi">МИССИИ</button><button id="bSq" class="mi">ОТРЯД</button><button id="bSnd" class="mi">ЗВУК: ВКЛ</button></div>
-<div id="panel"></div><div id="ver">concept v3.7 · ПК: WASD + мышь, 1-3 оружие · Телефон: джойстик и свайп</div></div></div>
+<div id="panel"></div><div id="ver">concept v3.8 · ПК: WASD + мышь, 1-3 оружие · Телефон: джойстик и свайп</div></div></div>
 <script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js"}}</script>
 <script type="module">
 import * as THREE from 'three';
@@ -222,7 +234,7 @@ const MS=[['1','Тропа','Джунгли у подножия · утро','Д
 const panel=document.getElementById('panel');let pmode='';
 function face(i){const c=document.createElement('canvas');c.width=c.height=8;const g=c.getContext('2d');g.fillStyle='#4a5a2a';g.fillRect(0,0,8,8);g.fillStyle=['#d8a878','#8a5a3a','#e8b888','#a87848'][i%4];g.fillRect(1,2,6,6);g.fillStyle='#000';g.fillRect(2,4,1,1);g.fillRect(5,4,1,1);g.fillStyle='#3a4a22';g.fillRect(1,0,6,2);return c}
 function showPanel(m){const mn=document.getElementById('menu');if(pmode==m){panel.innerHTML='';pmode='';mn.classList.remove('open');return}pmode=m;panel.innerHTML='';mn.classList.add('open');panel.className=m=='mis'?'mis':'';
-if(m=='mis')MS.forEach((x,i)=>{const d=document.createElement('div');d.className='card'+(i?' lock':'');d.innerHTML=`<b>${x[0]}. ${x[1]}</b>&nbsp;${x[2]} — ${x[3]} ${i?'🔒':'▶'}`;if(!i){d.style.cursor='pointer';d.onclick=()=>begin()}panel.append(d)});
+if(m=='mis')MS.forEach((x,i)=>{const d=document.createElement('div');d.className='card'+(i?' lock':'');d.innerHTML=`<span class="mn">${x[0]}</span><div class="mt"><b>${x[1]}</b><small>${x[2]} — ${x[3]}</small></div><span class="ms">${i?'🔒':'▶'}</span>`;if(!i){d.style.cursor='pointer';d.onclick=()=>begin()}panel.append(d)});
 if(m=='sq')SQ.forEach((x,i)=>{const d=document.createElement('div');d.className='card';d.append(i==0&&IMG_FACE?Object.assign(document.createElement('img'),{src:'sprites/face.png',style:'width:40px;height:40px;image-rendering:pixelated'}):face(i));const t=document.createElement('div');t.innerHTML=`<b>${x[0]}</b> — ${x[1]}<br>${x[2]}`;d.append(t);panel.append(d)})}
 document.getElementById('bMis').onclick=()=>showPanel('mis');document.getElementById('bSq').onclick=()=>showPanel('sq');
 let soundOn=true;document.getElementById('bSnd').onclick=e=>{soundOn=!soundOn;e.target.textContent='ЗВУК: '+(soundOn?'ВКЛ':'ВЫКЛ');tv.muted=!soundOn;if(master)master.gain.value=soundOn?.5:0};
