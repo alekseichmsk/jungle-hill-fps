@@ -1,6 +1,6 @@
 <!DOCTYPE html><html lang="ru"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>Hamburger Hill — concept v4.2</title>
+<title>Hamburger Hill — concept v4.3</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;700&display=swap" rel="stylesheet">
 <style>
 html,body{margin:0;height:100%;overflow:hidden;background:#000;font-family:monospace;touch-action:none;user-select:none;-webkit-user-select:none}
@@ -128,7 +128,7 @@ text-shadow:0 4px 0 #5a0402,0 8px 0 #2a0000,4px 4px 0 #000,-4px 0 0 #ff4a20,8px 
 <div id="menu"><h1 id="logo">ВЫСОТА 937</h1><h2 id="sub2">HAMBURGER HILL</h2>
 <p id="intro">Долина Ашау, 1969. Командование называет её высотой 937. Мы зовём её просто холмом. Восемь человек. Три дня. Приказ — взять вершину. Никто не сказал, зачем.</p>
 <div id="items"><button id="start">В БОЙ</button><button id="bMis" class="mi">МИССИИ</button><button id="bSq" class="mi">ОТРЯД</button><button id="bSnd" class="mi">ЗВУК: ВКЛ</button></div>
-<div id="panel"></div><div id="ver">concept v4.2 · ПК: WASD + мышь, 1-5 оружие · Телефон: джойстик и свайп</div></div></div>
+<div id="panel"></div><div id="ver">concept v4.3 · ПК: WASD + мышь, 1-5 оружие · Телефон: джойстик и свайп</div></div></div>
 <script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js"}}</script>
 <script type="module">
 import * as THREE from 'three';
@@ -142,8 +142,7 @@ NB=AC.createBuffer(1,AC.sampleRate*2,AC.sampleRate);const d=NB.getChannelData(0)
 // flame loop
 const fs=AC.createBufferSource();fs.buffer=NB;fs.loop=true;const ff=AC.createBiquadFilter();ff.type='lowpass';ff.frequency.value=900;flameG=AC.createGain();flameG.gain.value=0;fs.connect(ff).connect(flameG).connect(master);fs.start();
 // ambience: insects
-const as=AC.createBufferSource();as.buffer=NB;as.loop=true;const af=AC.createBiquadFilter();af.type='bandpass';af.frequency.value=5200;af.Q.value=8;const ag=AC.createGain();ag.gain.value=.05;
-const lfo=AC.createOscillator();lfo.frequency.value=7;const lg=AC.createGain();lg.gain.value=.04;lfo.connect(lg).connect(ag.gain);lfo.start();as.connect(af).connect(ag).connect(master);as.start();
+const insect=()=>{const t=AC.currentTime,dur=.6+Math.random()*1.2,s_=AC.createBufferSource();s_.buffer=NB;const af=AC.createBiquadFilter();af.type='bandpass';af.frequency.value=4200+Math.random()*1500;af.Q.value=14;const ag=AC.createGain();ag.gain.setValueAtTime(0,t);ag.gain.linearRampToValueAtTime(.012,t+.15);ag.gain.linearRampToValueAtTime(0,t+dur);s_.connect(af).connect(ag).connect(master);s_.start(t,Math.random()*.3);s_.stop(t+dur+.05)};window.__insect=1;setInterval(()=>{if(Math.random()<.35)insect()},2500);
 setInterval(()=>{if(Math.random()<.5)bird()},1800)}
 function env(node,t,a,peak,dec){const g=AC.createGain();g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(peak,t+a);g.gain.exponentialRampToValueAtTime(.001,t+a+dec);node.connect(g).connect(master);return g}
 function snd(type,freq,peak,dec,q=1,dly=0){if(!AC)return;const t=AC.currentTime+dly,s=AC.createBufferSource();s.buffer=NB;s.playbackRate.value=.5+Math.random();const f=AC.createBiquadFilter();f.type=type;f.frequency.value=freq;f.Q.value=q;s.connect(f);env(f,t,.002,peak,dec);s.start(t,Math.random());s.stop(t+dec+.1)}
@@ -408,11 +407,11 @@ function say(id,radio){if(radio===undefined)radio=!id.startsWith('brief')&&!id.s
 function radioChain(){if(!AC||AC.state!=='running')return null;if(!radioChain.n){const bp=AC.createBiquadFilter();bp.type='bandpass';bp.frequency.value=1600;bp.Q.value=.8;const ws=AC.createWaveShaper();const cv=new Float32Array(256);for(let i=0;i<256;i++){const x=i/128-1;cv[i]=Math.tanh(x*2.2)}ws.curve=cv;const g=AC.createGain();g.gain.value=1.3;bp.connect(ws);ws.connect(g);g.connect(AC.destination);
  const lp=AC.createBiquadFilter();lp.type='lowpass';lp.frequency.value=7000;const g2=AC.createGain();g2.gain.value=1.05;lp.connect(g2);g2.connect(AC.destination);
  const nb=AC.createBuffer(1,AC.sampleRate,AC.sampleRate),d=nb.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;radioChain.n={bp,lp,nb}}return radioChain.n}
-function click(){const c=radioChain();if(!c)return;const s=AC.createBufferSource();s.buffer=c.nb;const g=AC.createGain();g.gain.setValueAtTime(.18,AC.currentTime);g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+.12);s.connect(c.bp);s.connect(g);g.connect(AC.destination);s.start();s.stop(AC.currentTime+.13)}
+function click(){const c=radioChain();if(!c)return;const s=AC.createBufferSource();s.buffer=c.nb;const g=AC.createGain();g.gain.setValueAtTime(.05,AC.currentTime);g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+.1);s.connect(g);g.connect(AC.destination);s.start();s.stop(AC.currentTime+.11)}
 function nextV(){const it=vq.shift();if(!it){vcur=null;hideSub();return}const[id,radio]=it;showSub(id);
  if(!voxOn){vcur={_id:id,pause(){}};const t=setTimeout(()=>{if(vcur&&vcur._id==id){vcur=null;nextV()}},1800+VOX[id][1].length*45);return}
  const a=new Audio('audio/voice/'+id+'.mp3');a._id=id;vcur=a;let tts=false;
- const c=radioChain();if(c){try{const src=AC.createMediaElementSource(a);src.connect(radio?c.bp:c.lp);if(radio){click();vnoise=AC.createBufferSource();vnoise.buffer=c.nb;vnoise.loop=true;const ng=AC.createGain();ng.gain.value=.035;vnoise.connect(c.bp);vnoise.connect(ng);ng.connect(AC.destination);vnoise.start()}}catch(_){}}
+ const c=radioChain();if(c){try{const src=AC.createMediaElementSource(a);src.connect(radio?c.bp:c.lp);if(radio){click();vnoise=null}}catch(_){}}
  const done=()=>{if(vcur!==a&&!tts)return;if(vnoise){try{vnoise.stop()}catch(_){}vnoise=null}if(radio)click();vcur=null;setTimeout(nextV,250)};
  a.onended=done;
  a.onerror=()=>{if(vcur!==a)return;tts=true;if(!window.speechSynthesis){setTimeout(done,2500);return}const u=new SpeechSynthesisUtterance(VOX[id][1]);u.lang='ru-RU';const pv=VP[VOX[id][0]]||[1,1];u.pitch=pv[0];u.rate=pv[1];const rv=speechSynthesis.getVoices().find(v=>/ru/i.test(v.lang));if(rv)u.voice=rv;u.onend=done;u.onerror=done;speechSynthesis.speak(u)};
@@ -475,8 +474,12 @@ function allyTex(f){return tex(24,24,g=>{const R_=(c,x,y,w,h)=>{g.fillStyle=c;g.
  if(f>=2){R_('#222',9,10,13,2);R_('#5a3a1a',6,11,4,3);R_('#222',14,12,2,3);R_('#4a5a2a',10,9,4,3);R_('#d8a878',13,10,2,2);R_('#d8a878',9,12,2,2);if(f==3){R_('#ffe040',22,9,2,4);R_('#fff',23,10,1,2)}}
  else{R_('#d8a878',3,9,2,5);R_('#d8a878',13,9,2,5);R_('#222',3,12,12,2);R_('#5a3a1a',3,13,4,2)}
  const lg=f==1?2:0;R_('#3a4a22',5,16,3,6+lg);R_('#3a4a22',10,16,3,6-lg);R_('#111',5,22,3,2);R_('#111',10,22-lg,3,2)})}
-const AT=[0,1,2,3].map(allyTex);const allies=[];
-function addAlly(i,x,z){const s=sprite(AT[0],1.8,1.8);s.position.set(x,.9,z);S.add(s);const a={i,s,cd:1+Math.random(),aim:0,fl:0,walk:0,off:[(allies.length%2?1:-1)*(2+allies.length*.6),2.5+allies.length*1.2]};allies.push(a);return a}
+function usify(src){if(!src)return src;const im=src.image,w=im.width,h=im.height,c=document.createElement('canvas');c.width=w;c.height=h;const g=c.getContext('2d');g.drawImage(im,0,0);const d=g.getImageData(0,0,w,h),D=d.data,H=Math.floor(h*.2);let x0=w,x1=0,y1=0;
+ for(let y=0;y<H;y++)for(let x=0;x<w;x++){const k=(y*w+x)*4;if(D[k+3]<10)continue;const r=D[k],gg=D[k+1],bb=D[k+2];if(r>110&&gg>90&&bb<150&&r>bb+25){D[k+3]=0;x0=Math.min(x0,x);x1=Math.max(x1,x);y1=Math.max(y1,y)}}g.putImageData(d,0,0);
+ if(x1>x0){const cx=(x0+x1)/2,hw=(x1-x0)*.3,cy=y1;g.clearRect(0,0,w,Math.max(0,cy-hw*.85));g.clearRect(x0-3,0,cx-hw*1.1-x0+3,cy+2);g.clearRect(cx+hw*1.1,0,x1-cx-hw*1.1+4,cy+2);g.fillStyle='#3d4626';g.beginPath();g.ellipse(cx,cy,hw,hw*.85,0,Math.PI,0);g.fill();g.fillStyle='#2b3219';g.fillRect(cx-hw*1.08,cy-1,hw*2.16,Math.max(2,h*.012));g.fillStyle='#55603a';g.fillRect(cx-hw*.5,cy-hw*.7,hw*.5,Math.max(1,h*.01))}
+ const t=new THREE.CanvasTexture(c);t.magFilter=t.minFilter=THREE.NearestFilter;t.colorSpace=THREE.SRGBColorSpace;t.userData=src.userData;return t}
+const AT=RIF?[usify(RIF[0]),usify(RIF[1]),usify(AIMT||RIF[2]),null]:[0,1,2,3].map(allyTex);if(RIF)AT[3]=AT[2];const AASP=RIF?RIF[0].userData.asp:1;const allies=[];
+function addAlly(i,x,z){const s=sprite(AT[0],1.8*AASP,1.8);if(RIF)s.material.color.setHex(0xd8ffd0);s.userData.ally=1;s.position.set(x,.9,z);S.add(s);const a={i,s,cd:1+Math.random(),aim:0,fl:0,walk:0,off:[(allies.length%2?1:-1)*(2+allies.length*.6),2.5+allies.length*1.2]};allies.push(a);return a}
 const _v=new THREE.Vector3();
 function updateAllies(dt){for(const a of allies){if(squadHP[a.i]<=0)continue;const p=a.s.position;
  let tg=null,td=22;for(const e of enemies){if(!e.alive||e.dorm||(e.type=='tun'&&e.rise<1))continue;const d=Math.hypot(e.s.position.x-p.x,e.s.position.z-p.z);if(d<td){td=d;tg=e}}
@@ -501,7 +504,7 @@ function initMusic(){if(MUS||!AC)return;const c=AC,out=c.createGain();out.gain.v
  const amb=c.createGain(),act=c.createGain();amb.gain.value=.0001;act.gain.value=.0001;amb.connect(out);act.connect(out);
  const nb=c.createBuffer(1,c.sampleRate*2,c.sampleRate),nd=nb.getChannelData(0);for(let i=0;i<nd.length;i++)nd[i]=Math.random()*2-1;
  // ambient: wind noise + dark drone + insects + birds
- const wn=c.createBufferSource();wn.buffer=nb;wn.loop=true;const wf=c.createBiquadFilter();wf.type='bandpass';wf.frequency.value=420;wf.Q.value=.6;const wg=c.createGain();wg.gain.value=.10;wn.connect(wf);wf.connect(wg);wg.connect(amb);wn.start();
+ const wn=c.createBufferSource();wn.buffer=nb;wn.loop=true;const wf=c.createBiquadFilter();wf.type='bandpass';wf.frequency.value=420;wf.Q.value=.6;const wg=c.createGain();wg.gain.value=.035;wn.connect(wf);wf.connect(wg);wg.connect(amb);wn.start();
  const lfo=c.createOscillator();lfo.frequency.value=.07;const lg=c.createGain();lg.gain.value=220;lfo.connect(lg);lg.connect(wf.frequency);lfo.start();
  const dlp=c.createBiquadFilter();dlp.type='lowpass';dlp.frequency.value=260;const dg=c.createGain();dg.gain.value=.09;dlp.connect(dg);dg.connect(amb);
  for(const f of[41.2,41.5,61.7,82.6]){const o=c.createOscillator();o.type='sawtooth';o.frequency.value=f;o.connect(dlp);o.start()}
@@ -696,7 +699,7 @@ collectWorld();
 if(Q.has('test'))window.__test={
  get P(){return P},get W(){return W},get enemies(){return enemies},get allies(){return allies},get MC(){return MC},get solids(){return solids},get fires(){return fires},get corpses(){return corpses},get shots(){return shots},
  get ALLOW(){return ALLOW},get MID(){return MID},get oi(){return oi},get over(){return over},get started(){return started},get mus(){return window.__MUS?{amb:__MUS.amb.gain.value,act:__MUS.act.gain.value}:null},
- get voxOn(){return voxOn},get musOn(){return musOn},get vcur(){return vcur?vcur._id:null},get squadHP(){return squadHP},get time(){return time},
+ get voxOn(){return voxOn},get musOn(){return musOn},get vcur(){return vcur?vcur._id:null},get squadHP(){return squadHP},get time(){return time},get vnoise(){return vnoise},
  setFiring(v){firing=v},shoot,hit,igniteEnemy,igniteSolid,igniteGround,say,
  teleport(x,z,yaw){P.x=x;P.z=z;if(yaw!==undefined)P.yaw=yaw},
  lookAt(x,z){P.yaw=Math.atan2(-(x-P.x),-(z-P.z));P.pitch=0},
