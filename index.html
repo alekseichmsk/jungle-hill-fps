@@ -95,6 +95,9 @@ text-shadow:0 4px 0 #5a0402,0 8px 0 #2a0000,4px 4px 0 #000,-4px 0 0 #ff4a20,8px 
 #panel img,#panel canvas{object-fit:contain;image-rendering:pixelated;aspect-ratio:1}
 #tv{object-fit:cover}
 @media (max-height:500px){#items{max-width:720px;margin:0 auto}#panel.mis .card{padding:3px 6px}#panel.mis{grid-template-columns:1fr 1fr}}
+
+/* v3.8 weapon viewmodel placement: lower-right, never over crosshair */
+#gun{left:auto!important;right:0!important;transform:none!important;height:min(400px,max(calc((100dvh - 110px) / 2 - 18px),calc((50vw - 14px) * .75)))!important;width:auto!important;aspect-ratio:4/3}
 </style></head><body><svg width="0" height="0" style="position:absolute"><filter id="jag"><feTurbulence type="fractalNoise" baseFrequency="0.09" numOctaves="1" seed="3"/><feDisplacementMap in="SourceGraphic" scale="5"/></filter></svg>
 <canvas id="c"></canvas><canvas id="gun" width="160" height="120"></canvas><div id="cross"></div><div id="flash"></div>
 <div id="look"></div><div id="joy"><div id="knob"></div></div><div id="fire" class="btn">FIRE</div><div id="wsw" class="btn">ОРУЖ</div>
@@ -199,7 +202,7 @@ if(muzzle>0&&P.w==0&&IMG_M16&&!IMG_FIRE){const y=26+bob+k,F=(c,x,yy,w,h)=>{gc.fi
 if(P.w==0&&IMG_M16){if(muzzle>0&&IMG_FIRE)gc.drawImage(IMG_FIRE,0,7+bob+k);else gc.drawImage(IMG_M16,0,90-71+6+bob+k)}else if(P.w==0){R_('#222',60,25,10,40);R_('#333',56,50,18,40);R_('#111',62,15,6,14);R_('#5a3a1a',50,70,10,20)}
 if(P.w==1){R_('#333',57,20,8,50);R_('#333',65,20,8,50);R_('#6a4a2a',54,60,22,30)}
 if(P.w==3){R_('#2a2a2a',68,38,10,8);R_('#3a3a3a',66,44,14,22);R_('#1a1a1a',70,34,6,6);R_('#5a3a1a',67,58,12,10);R_('#c89a6a',58,62,30,18);R_('#2e3e1e',56,78,34,12);if(muzzle>0){R_('#ffe060',67,24,12,10);R_('#fff',70,27,6,4)}}
-if(P.w==2&&IMG_FLI){const fy=bob+k;if(firing&&W[2].ammo>0&&IMG_FLF&&Math.floor(t*16)%2)gc.drawImage(IMG_FLF,150-IMG_FLF.width+6,96-IMG_FLF.height+fy);else gc.drawImage(IMG_FLI,8,96-IMG_FLI.height+fy)}else if(P.w==2){R_('#555',58,28,14,40);R_('#7a7a3a',48,55,34,35);R_('#222',62,18,6,12);if(firing&&W[2].ammo>0){R_('#ff8a10',58,4,14,14);R_('#ffe040',62,8,6,6)}}
+if(P.w==2&&IMG_FLI){const fy=bob+k;if(firing&&W[2].ammo>0&&IMG_FLF&&Math.floor(t*16)%2)gc.drawImage(IMG_FLF,160-IMG_FLF.width,96-IMG_FLF.height+fy);else gc.drawImage(IMG_FLI,160-IMG_FLI.width,96-IMG_FLI.height+fy)}else if(P.w==2){R_('#555',58,28,14,40);R_('#7a7a3a',48,55,34,35);R_('#222',62,18,6,12);if(firing&&W[2].ammo>0){R_('#ff8a10',58,4,14,14);R_('#ffe040',62,8,6,6)}}
 if(P.w&&!(P.w==2&&IMG_FLI)){R_('#c89a6a',40,72,22,18);R_('#c89a6a',72,62,18,16);R_('#2e3e1e',36,82,30,8)}}
 const fc=document.getElementById('face').getContext('2d');
 function drawFace(){if(IMG_FACE){const h=P.hp,F=(c,x,y,w,hh)=>{fc.fillStyle=c;fc.fillRect(x,y,w,hh)};fc.clearRect(0,0,58,64);fc.drawImage(IMG_FACE,0,0);
