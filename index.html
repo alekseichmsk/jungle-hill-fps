@@ -1,6 +1,6 @@
 <!DOCTYPE html><html lang="ru"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>Hamburger Hill — concept v3.2</title>
+<title>Hamburger Hill — concept v3.3</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;700&display=swap" rel="stylesheet">
 <style>
 html,body{margin:0;height:100%;overflow:hidden;background:#000;font-family:monospace;touch-action:none;user-select:none;-webkit-user-select:none}
@@ -138,7 +138,7 @@ function part(x,y,z,m,n,sp,life){for(let i=0;i<n;i++){const o=new THREE.Mesh(pg,
 function splat(x,z){const d=new THREE.Mesh(new THREE.CircleGeometry(.3+Math.random()*.5,6),pm.blood);d.rotation.x=-Math.PI/2;d.position.set(x+(Math.random()-.5),.03,z+(Math.random()-.5));S.add(d)}
 const gc=document.getElementById('gun').getContext('2d');
 function drawGun(t){gc.clearRect(0,0,160,90);const bob=Math.sin(t*8)*(moving?3:0),k=muzzle>0?4:0;const R_=(c,x,y,w,h)=>{gc.fillStyle=c;gc.fillRect(x,y+bob+k,w,h)};
-if(muzzle>0&&P.w==0&&IMG_M16){gc.fillStyle='#ffe060';gc.beginPath();gc.moveTo(75,12+bob+k);gc.lineTo(70,25+bob+k);gc.lineTo(80,25+bob+k);gc.fill()}else if(muzzle>0&&!W[P.w].fire){gc.fillStyle='#ffe060';gc.beginPath();gc.moveTo(65,8+bob);gc.lineTo(50,30+bob);gc.lineTo(80,30+bob);gc.fill()}
+if(muzzle>0&&P.w==0&&IMG_M16){const y=26+bob+k,F=(c,x,yy,w,h)=>{gc.fillStyle=c;gc.fillRect(x,yy,w,h)};if(Math.random()<.5){F('#ff9a20',71,y-8,9,10);F('#ff9a20',67,y-4,17,3);F('#ffe060',73,y-6,5,7);F('#fff',74,y-4,3,3)}else{F('#ff9a20',70,y-10,3,3);F('#ff9a20',78,y-10,3,3);F('#ff9a20',72,y-7,7,8);F('#ffe060',73,y-5,5,5);F('#fff',74,y-3,3,2)}}else if(muzzle>0&&!W[P.w].fire){gc.fillStyle='#ffe060';gc.beginPath();gc.moveTo(65,8+bob);gc.lineTo(50,30+bob);gc.lineTo(80,30+bob);gc.fill()}
 if(P.w==0&&IMG_M16){gc.drawImage(IMG_M16,0,90-71+6+bob+k)}else if(P.w==0){R_('#222',60,25,10,40);R_('#333',56,50,18,40);R_('#111',62,15,6,14);R_('#5a3a1a',50,70,10,20)}
 if(P.w==1){R_('#333',57,20,8,50);R_('#333',65,20,8,50);R_('#6a4a2a',54,60,22,30)}
 if(P.w==2){R_('#555',58,28,14,40);R_('#7a7a3a',48,55,34,35);R_('#222',62,18,6,12);if(firing&&W[2].ammo>0){R_('#ff8a10',58,4,14,14);R_('#ffe040',62,8,6,6)}}
@@ -216,8 +216,8 @@ if(DEMO=='hut'){P.x=-6;P.z=-3.5;P.yaw=0.15;P.pitch=.15;enemies.forEach(e=>e.s.po
 if(DEMO=='tower'){P.x=-10;P.z=-10;P.yaw=0.5;P.pitch=.25}
 if(DEMO=='win'){enemies.forEach(e=>{e.alive=false;S.remove(e.s)})}}
 let last=performance.now(),T=0;
-function loop(now){const dt=Math.max(0,Math.min(.05,(now-last)/1000));last=now;T+=dt;
-if(started&&!over){time+=dt*2;updatePlayer(dt);updateEnemies(dt);shotCd-=dt;muzzle-=dt;if(firing&&shotCd<=0){shoot();shotCd=W[P.w].rate}}else updatePlayer(0);
+function loop(now){const dt=Math.max(0,Math.min(.05,(now-last)/1000));muzzle-=dt;if(!firing)muzzle=0;last=now;T+=dt;
+if(started&&!over){time+=dt*2;updatePlayer(dt);updateEnemies(dt);shotCd-=dt;if(firing&&shotCd<=0){shoot();shotCd=W[P.w].rate}}else updatePlayer(0);
 updateShots(dt);hud();if(flameG)flameG.gain.setTargetAtTime(started&&!over&&firing&&P.w==2&&W[2].ammo>0?.5:0,AC.currentTime,.05);
 if(AC&&moving&&started&&!over&&T-lastStep>.38){lastStep=T;SFX.step()}drawGun(T);R.render(S,cam);requestAnimationFrame(loop)}
 requestAnimationFrame(loop);
