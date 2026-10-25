@@ -1,6 +1,6 @@
 <!DOCTYPE html><html lang="ru"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>Hamburger Hill — concept v3.5</title>
+<title>Hamburger Hill — concept v3.6</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;700&display=swap" rel="stylesheet">
 <style>
 html,body{margin:0;height:100%;overflow:hidden;background:#000;font-family:monospace;touch-action:none;user-select:none;-webkit-user-select:none}
@@ -63,6 +63,26 @@ text-shadow:0 4px 0 #5a0402,0 8px 0 #2a0000,4px 4px 0 #000,-4px 0 0 #ff4a20,8px 
 #panel .card b{color:#ffe070}#panel .lock{opacity:.45}#panel .card canvas{width:40px;height:40px;image-rendering:pixelated;flex:none}
 #ver{font-family:'Pixelify Sans',monospace;color:#7c8460;font-size:11px;margin-top:18px}
 @media (max-width:560px){#intro{font-size:12px}#msg #items button{font-size:19px;padding:10px 0}}
+
+/* v3.6 menu fit */
+#msg{height:100vh;height:100dvh;overflow:hidden;justify-content:center}
+#menu{height:100%;max-height:100dvh;margin:0 auto;padding:clamp(6px,2.5vh,24px) 10px;justify-content:center;gap:0;overflow:hidden}
+#logo{font-size:clamp(28px,min(11vw,10vh),84px)}
+#sub2{font-size:clamp(11px,min(4vw,3vh),22px);margin:clamp(4px,1.5vh,14px) 0 clamp(2px,.8vh,6px);letter-spacing:clamp(3px,1vw,8px)}
+#intro{font-size:clamp(10px,min(3.4vw,2vh),14px);margin:clamp(4px,1vh,8px) 0 clamp(6px,1.6vh,16px);padding:clamp(4px,1vh,10px) 12px}
+#items{gap:clamp(5px,1.2vh,12px);flex:none}
+#msg #items button{font-size:clamp(14px,min(5vw,3.2vh),22px);padding:clamp(5px,1.3vh,12px) 0}
+#panel{flex:0 1 auto;min-height:0;overflow-y:auto;margin-top:clamp(6px,1.5vh,16px);display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,170px),1fr));gap:6px;align-content:start}
+#panel:empty{display:none}
+#panel .card{margin:0;padding:5px 6px;font-size:clamp(10px,1.7vh,13px);line-height:1.25}
+#panel .card canvas,#panel .card img{width:clamp(24px,5vh,40px)!important;height:clamp(24px,5vh,40px)!important}
+#panel.mis{grid-template-columns:1fr}
+#ver{margin-top:clamp(4px,1.2vh,18px);font-size:clamp(9px,1.4vh,11px);flex:none}
+#menu.open #intro{display:none}
+@media (max-height:700px){#intro{display:none}}
+@media (max-height:500px){#menu{padding:4px 10px;max-width:900px}#logo{font-size:clamp(24px,11vh,44px)}#sub2{margin:2px 0}
+#items{flex-direction:row;flex-wrap:wrap;width:100%;justify-content:center;gap:6px}#msg #items button{width:auto;flex:1 1 20%;padding:6px 10px;font-size:15px}
+#panel{grid-template-columns:repeat(auto-fill,minmax(190px,1fr));margin-top:6px}#ver{display:none}}
 </style></head><body><svg width="0" height="0" style="position:absolute"><filter id="jag"><feTurbulence type="fractalNoise" baseFrequency="0.09" numOctaves="1" seed="3"/><feDisplacementMap in="SourceGraphic" scale="5"/></filter></svg>
 <canvas id="c"></canvas><canvas id="gun" width="160" height="90"></canvas><div id="cross"></div><div id="flash"></div>
 <div id="look"></div><div id="joy"><div id="knob"></div></div><div id="fire" class="btn">FIRE</div><div id="wsw" class="btn">ОРУЖ</div>
@@ -74,12 +94,12 @@ text-shadow:0 4px 0 #5a0402,0 8px 0 #2a0000,4px 4px 0 #000,-4px 0 0 #ff4a20,8px 
 <div id="menu"><h1 id="logo">ВЫСОТА 937</h1><h2 id="sub2">HAMBURGER HILL</h2>
 <p id="intro">Долина Ашау, 1969. Командование называет её высотой 937. Мы зовём её просто холмом. Восемь человек. Три дня. Приказ — взять вершину. Никто не сказал, зачем.</p>
 <div id="items"><button id="start">В БОЙ</button><button id="bMis" class="mi">МИССИИ</button><button id="bSq" class="mi">ОТРЯД</button><button id="bSnd" class="mi">ЗВУК: ВКЛ</button></div>
-<div id="panel"></div><div id="ver">concept v3.5 · ПК: WASD + мышь, 1-3 оружие · Телефон: джойстик и свайп</div></div></div>
+<div id="panel"></div><div id="ver">concept v3.6 · ПК: WASD + мышь, 1-3 оружие · Телефон: джойстик и свайп</div></div></div>
 <script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js"}}</script>
 <script type="module">
 import * as THREE from 'three';
 const loadImg=src=>new Promise(r=>{const i=new Image();i.onload=()=>r(i);i.onerror=()=>r(null);i.src=src});
-const [IMG_EN,IMG_FACE,IMG_M16,IMG_PALM,IMG_BUSH,IMG_WALL,IMG_ROOF,IMG_PLANK,IMG_FIRE,IMG_TR]=await Promise.all(['enemy','face','m16_hands','palm','bush','wall','roof','planks','m16_fire','tracer'].map(n=>loadImg('sprites/'+n+'.png')));
+const [IMG_EN,IMG_FACE,IMG_M16,IMG_PALM,IMG_BUSH,IMG_WALL,IMG_ROOF,IMG_PLANK,IMG_FIRE,IMG_TR,IMG_GF,IMG_GF2,IMG_HF,IMG_PB,IMG_SB]=await Promise.all(['enemy','face','m16_hands','palm','bush','wall','roof','planks','m16_fire','tracer','fire_grass','fire_grass2','fire_hut','palm_burn','soldier_burn'].map(n=>loadImg('sprites/'+n+'.png')));
 const tv=document.getElementById('tv');
 let AC=null,NB=null,master,flameG,lastStep=0;
 function initAudio(){if(AC)return;AC=new (window.AudioContext||window.webkitAudioContext)();master=AC.createGain();master.gain.value=.5;master.connect(AC.destination);
@@ -201,7 +221,7 @@ const SQ=[['ГИЛЗА','Игрок, капрал','Подбирает патр�
 const MS=[['1','Тропа','Джунгли у подножия · утро','Дойти до лагеря у реки'],['2','Переправа','Река и мост · день','Удержать мост'],['3','Деревня','Покинутая деревня · вечер','Найти МАРТИ и рацию'],['4','Ночь','Склон и туннели · ночь','Пройти туннели к вышкам'],['5','Высота 937','Вершина и бункеры · рассвет','Взять вершину и удержать']];
 const panel=document.getElementById('panel');let pmode='';
 function face(i){const c=document.createElement('canvas');c.width=c.height=8;const g=c.getContext('2d');g.fillStyle='#4a5a2a';g.fillRect(0,0,8,8);g.fillStyle=['#d8a878','#8a5a3a','#e8b888','#a87848'][i%4];g.fillRect(1,2,6,6);g.fillStyle='#000';g.fillRect(2,4,1,1);g.fillRect(5,4,1,1);g.fillStyle='#3a4a22';g.fillRect(1,0,6,2);return c}
-function showPanel(m){if(pmode==m){panel.innerHTML='';pmode='';return}pmode=m;panel.innerHTML='';
+function showPanel(m){const mn=document.getElementById('menu');if(pmode==m){panel.innerHTML='';pmode='';mn.classList.remove('open');return}pmode=m;panel.innerHTML='';mn.classList.add('open');panel.className=m=='mis'?'mis':'';
 if(m=='mis')MS.forEach((x,i)=>{const d=document.createElement('div');d.className='card'+(i?' lock':'');d.innerHTML=`<b>${x[0]}. ${x[1]}</b>&nbsp;${x[2]} — ${x[3]} ${i?'🔒':'▶'}`;if(!i){d.style.cursor='pointer';d.onclick=()=>begin()}panel.append(d)});
 if(m=='sq')SQ.forEach((x,i)=>{const d=document.createElement('div');d.className='card';d.append(i==0&&IMG_FACE?Object.assign(document.createElement('img'),{src:'sprites/face.png',style:'width:40px;height:40px;image-rendering:pixelated'}):face(i));const t=document.createElement('div');t.innerHTML=`<b>${x[0]}</b> — ${x[1]}<br>${x[2]}`;d.append(t);panel.append(d)})}
 document.getElementById('bMis').onclick=()=>showPanel('mis');document.getElementById('bSq').onclick=()=>showPanel('sq');
@@ -217,27 +237,29 @@ function hit(e,d,pt){if(e.burn>0&&e.alive){e.hp=0;d=1}if(e.alive&&Math.random()<
 // ---- fire system ----
 function flameTex(f){return tex(16,24,g=>{const C=['#ff3a00','#ff8a10','#ffd040','#fff6a0'];for(let i=0;i<4;i++){g.fillStyle=C[i];const w=14-i*3.2,h=22-i*5;for(let y=0;y<h;y++){const ww=w*(1-y/h)*(0.8+0.4*Math.sin(y*.9+f*2+i));g.fillRect(8-ww/2+Math.sin(y*.5+f)*1.2,23-y,ww,1)}}})}
 const FL=[0,1,2,3].map(flameTex);
+function sheetT(img){if(!img)return null;const w=img.width/4;return [0,1,2,3].map(i=>{const c=document.createElement('canvas');c.width=w;c.height=img.height;c.getContext('2d').drawImage(img,-i*w,0);const t=new THREE.CanvasTexture(c);t.magFilter=t.minFilter=THREE.NearestFilter;t.colorSpace=THREE.SRGBColorSpace;t.userData={asp:w/img.height};return t})}
+const GF=sheetT(IMG_GF),GF2=sheetT(IMG_GF2),HF=sheetT(IMG_HF),PB=sheetT(IMG_PB),SB=sheetT(IMG_SB);
 const fires=[];let fireT=0;
 const scorchM=new THREE.MeshBasicMaterial({color:0x1a140c,transparent:true,opacity:.85,depthWrite:false});
 const smokeM=new THREE.MeshBasicMaterial({color:0x3a3a36,transparent:true,opacity:.6});
-function addFlame(x,y,z,sc){const s=new THREE.Sprite(new THREE.SpriteMaterial({map:FL[0],transparent:true,alphaTest:.3,fog:false}));s.scale.set(sc*.7,sc,1);s.position.set(x,y+sc/2,z);s.userData.ph=Math.random()*4;S.add(s);return s}
+function addFlame(x,y,z,sc,set){set=set||FL;const s=new THREE.Sprite(new THREE.SpriteMaterial({map:set[0],transparent:true,alphaTest:.3,fog:false}));s.userData.set=set;const asp=set[0].userData&&set[0].userData.asp||.7;s.scale.set(sc*asp,sc,1);s.position.set(x,y+sc/2,z);s.userData.ph=Math.random()*4;S.add(s);return s}
 function smoke(x,y,z){const o=new THREE.Mesh(pg,smokeM);o.scale.setScalar(3+Math.random()*3);o.position.set(x+(Math.random()-.5)*.5,y,z+(Math.random()-.5)*.5);o.userData={v:new THREE.Vector3((Math.random()-.5)*.4,1+Math.random(),(Math.random()-.5)*.4),l:1.5+Math.random(),g:false};S.add(o);parts.push(o)}
 function fireNear(x,z,r){return fires.some(f=>Math.hypot(f.x-x,f.z-z)<r)}
-function igniteGround(x,z){if(fires.length>70||Math.abs(x-12)<3.2||Math.abs(x)>37||Math.abs(z)>37||fireNear(x,z,.9))return;fires.push({x,z,t:2.5+Math.random()*1.5,kind:'grass',fl:[addFlame(x,0,z,.9+Math.random()*.5)],sp:.4+Math.random()*.4})}
-function igniteSolid(so){if(so.burnt||so.burning)return;so.burning=true;const fl=[];const n=so.kind=='hut'?6:3;for(let i=0;i<n;i++){const a=Math.random()*6.28,rr=so.kind=='hut'?2.15:.4;fl.push(addFlame(so.x+Math.cos(a)*rr,Math.random()*so.h,so.z+Math.sin(a)*rr,so.kind=='hut'?1.6:1.4))}
+function igniteGround(x,z){if(fires.length>70||Math.abs(x-12)<3.2||Math.abs(x)>37||Math.abs(z)>37||fireNear(x,z,.9))return;fires.push({x,z,t:2.5+Math.random()*1.5,kind:'grass',fl:[addFlame(x,-.05,z,.7+Math.random()*.4,GF?(Math.random()<.5?GF:GF2):null)],sp:.4+Math.random()*.4})}
+function igniteSolid(so){if(so.burnt||so.burning)return;so.burning=true;const fl=[];if(so.kind=='palm'&&PB){so.meshes[0].scale.x=so.meshes[0].scale.y*PB[0].userData.asp;so.meshes[0].material.map=PB[0]}else{const n=so.kind=='hut'?(HF?4:6):3;for(let i=0;i<n;i++){const a=i/n*6.28+Math.random()*.5,rr=so.kind=='hut'?2.2:.4;fl.push(so.kind=='hut'&&HF?addFlame(so.x+Math.cos(a)*rr,-.1,so.z+Math.sin(a)*rr,3.2+Math.random(),HF):addFlame(so.x+Math.cos(a)*rr,Math.random()*so.h,so.z+Math.sin(a)*rr,so.kind=='hut'?1.6:1.4))}}
 fires.push({x:so.x,z:so.z,t:8,kind:'solid',so,fl,sp:1})}
-function igniteEnemy(e){if(e.burn>0||!e.alive)return;e.burn=4;e.zz=0;e.fl=addFlame(e.s.position.x,.2,e.s.position.z,1.5);startScream(e)}
+function igniteEnemy(e){if(e.burn>0||!e.alive)return;e.burn=4;e.zz=0;if(SB){e.fl=null;e.s.scale.set(1.9*SB[0].userData.asp,1.9,1);e.s.position.y=.95}else e.fl=addFlame(e.s.position.x,.2,e.s.position.z,1.5);startScream(e)}
 function burnEnemy(e,dt){const p=e.s.position;e.burn-=dt;e.zz-=dt;if(e.zz<=0){e.zz=.25+Math.random()*.35;e.dir=Math.random()*6.28}
 const nx=p.x+Math.cos(e.dir)*3.2*dt,nz=p.z+Math.sin(e.dir)*3.2*dt;if(!blocked(nx,nz)){p.x=nx;p.z=nz}else e.zz=0;e.walk+=dt*3;
-e.s.material.map=Math.floor(e.walk*4)%2?ET[3]:ET[2];e.fl.position.set(p.x,.95,p.z);if(Math.random()<dt*6)smoke(p.x,1.6,p.z);
+e.s.material.map=SB?SB[Math.floor(e.walk*3)%4]:(Math.floor(e.walk*4)%2?ET[3]:ET[2]);if(e.fl)e.fl.position.set(p.x,.95,p.z);if(Math.random()<dt*6)smoke(p.x,1.6,p.z);
 for(const o of enemies)if(o!==e&&o.alive&&!(o.burn>0)&&o.s.position.distanceTo(p)<1.4)igniteEnemy(o);
 if(Math.random()<dt*3)igniteGround(p.x,p.z);
-if(e.burn<=0){e.alive=false;stopScream(e);S.remove(e.fl);e.s.material.map=CORPSE;e.s.scale.set(1.8,1.0,1);e.s.position.y=.35;e.corpse=true;corpses.push(e);SFX.hit()}}
+if(e.burn<=0){e.alive=false;stopScream(e);if(e.fl)S.remove(e.fl);e.s.material.map=CORPSE;e.s.scale.set(1.8,1.0,1);e.s.position.y=.35;e.corpse=true;corpses.push(e);SFX.hit()}}
 const corpses=[];
 const CORPSE=tex(IMG_EN?IMG_EN.height:24,IMG_EN?IMG_EN.width:16,g=>{const W_=IMG_EN?IMG_EN.width:16,H_=IMG_EN?IMG_EN.height:24;g.translate(0,W_);g.rotate(-Math.PI/2);if(IMG_EN)g.drawImage(IMG_EN,0,0);else{g.fillStyle='#333';g.fillRect(3,0,10,24)}
 g.setTransform(1,0,0,1,0,0);g.globalCompositeOperation='source-atop';g.fillStyle='rgba(18,12,8,.88)';g.fillRect(0,0,H_,W_);g.fillStyle='rgba(255,90,0,.5)';for(let i=0;i<12;i++)g.fillRect(Math.random()*H_,Math.random()*W_,2,1)});
 function updateFires(dt){fireT+=dt;const fr=Math.floor(fireT*10);
-for(let i=fires.length-1;i>=0;i--){const f=fires[i];f.t-=dt;f.fl.forEach((s,k)=>{s.material.map=FL[(fr+k+(s.userData.ph|0))%4]});
+for(let i=fires.length-1;i>=0;i--){const f=fires[i];f.t-=dt;f.fl.forEach((s,k)=>{const st=s.userData.set||FL;s.material.map=st[(fr+k+(s.userData.ph|0))%st.length]});if(f.kind=='solid'&&f.so.kind=='palm'&&PB)f.so.meshes[0].material.map=PB[Math.min(3,Math.floor((8-f.t)/2))];
 if(Math.random()<dt*(f.kind=='solid'?8:2))smoke(f.x+(Math.random()-.5)*(f.kind=='solid'?3:.6),f.kind=='solid'?f.so.h:1,f.z+(Math.random()-.5)*(f.kind=='solid'?3:.6));
 // spread
 if(Math.random()<dt*f.sp){const a=Math.random()*6.28,r=f.kind=='solid'?2.6:1.3;igniteGround(f.x+Math.cos(a)*r,f.z+Math.sin(a)*r)}
@@ -246,7 +268,7 @@ for(const e of enemies)if(e.alive&&!(e.burn>0)&&Math.hypot(e.s.position.x-f.x,e.
 if(Math.hypot(P.x-f.x,P.z-f.z)<(f.kind=='solid'?2.4:.7)&&DEMO!='fire'){P.hp-=8*dt}
 if(f.t<=0){f.fl.forEach(s=>S.remove(s));fires.splice(i,1);
 if(f.kind=='grass'){const d=new THREE.Mesh(new THREE.CircleGeometry(.6+Math.random()*.4,7),scorchM);d.rotation.x=-Math.PI/2;d.position.set(f.x,.025,f.z);S.add(d)}
-else{f.so.burning=false;f.so.burnt=true;f.so.meshes.forEach(m=>m.material.color.setHex(0x4a3a30))}}}
+else{f.so.burning=false;f.so.burnt=true;if(f.so.kind=='palm'&&PB){f.so.meshes[0].material.map=PB[3];f.so.meshes[0].material.color.setHex(0x3a3330)}else f.so.meshes.forEach(m=>m.material.color.setHex(0x4a3a30))}}}
 // flame particles ignite
 for(const q of parts){if(!q.userData.burn||q.userData.done)continue;const p=q.position;
 if(q.userData.l<.15||p.y<.3){q.userData.done=true;if(Math.random()<.5)igniteGround(p.x,p.z)}
@@ -302,6 +324,9 @@ if(DEMO=='tracer'){P.z=-4;enemies.forEach((e,i)=>{if(i<3){e.s.position.set(-4+i*
 if(DEMO=='flame'){P.w=2;firing=true;P.z=-7;enemies[0].s.position.set(0,.9,-11)}
 if(DEMO=='fire'){P.w=2;P.z=-3;P.x=-6;P.yaw=0;firing=true;enemies.forEach((e,i)=>{if(i<3)e.s.position.set(-8+i*2,.9,-12);else e.s.position.x+=60});setTimeout(()=>{firing=false},2200)}
 if(DEMO=='pistol'){P.w=3;P.z=-4}
+if(DEMO=='burn'){P.z=-2;P.x=0;enemies.forEach((e,i)=>{if(i<2){e.s.position.set(-2+i*4,.9,-9)}else e.s.position.x+=60});setTimeout(()=>enemies.slice(0,2).forEach(igniteEnemy),200)}
+if(DEMO=='corpse'){P.z=-2;enemies.forEach((e,i)=>{if(i<2){e.s.position.set(-1.5+i*3,.9,-6)}else e.s.position.x+=60});setTimeout(()=>enemies.slice(0,2).forEach(e=>{igniteEnemy(e);e.burn=.05}),200)}
+if(DEMO=='palm'){P.x=0;P.z=-2;P.w=2;firing=true;const so=solids.filter(x=>x.kind=='palm').sort((a,b)=>Math.hypot(a.x,a.z+2)-Math.hypot(b.x,b.z+2))[0];P.yaw=Math.atan2(-(so.x-P.x),-(so.z-P.z));setTimeout(()=>{firing=false;igniteSolid(so)},300)}
 if(DEMO=='win'){enemies.forEach(e=>{e.alive=false;S.remove(e.s)})}}
 let last=performance.now(),T=0;
 function loop(now){const dt=Math.max(0,Math.min(.05,(now-last)/1000));muzzle-=dt;if(!firing)muzzle=0;last=now;T+=dt;
