@@ -107,7 +107,7 @@ def test_mg_nests_destroyable(make):
 
 def test_boss_hp_and_death(make):
     g=start(make,5);g.T('t.god()');b='t.enemies.find(e=>e.type=="boss")'
-    assert g.T(b+'.hp')==420;g.T(f'(t.hit({b},100,{b}.s.position.clone()),1)');assert g.T(b+'.hp')==320 and g.T(b+'.alive')
+    h0=g.T(b+'.hp');assert h0==round(420*1.28);g.T(f'(t.hit({b},100,{b}.s.position.clone()),1)');assert g.T(b+'.hp')==h0-100 and g.T(b+'.alive')
     g.T(f'(t.hit({b},9999,{b}.s.position.clone()),1)');assert not g.T(b+'.alive');g.wait(300);assert g.T('t.oi')>=1
 
 def test_music_calm_combat_calm(make):
@@ -136,9 +136,9 @@ def test_briefing_no_duplicate_subtitles(make):
 
 def test_toggles_persist(make):
     g=make('?m=1&test=1');g.until('t.MC!=null')
-    g.page.click('#vtog');g.page.click('#mtog')
+    g.page.click('#menuB');g.page.click('#vtog');g.page.click('#mtog')
     assert g.js('localStorage.h937_vox')=='0' and g.js('localStorage.h937_mus')=='0'
-    g.page.reload();g.page.wait_for_function('()=>window.__test&&window.__test.MC');assert 'ВЫКЛ' in g.page.inner_text('#vtog') and 'ВЫКЛ' in g.page.inner_text('#mtog')
+    g.page.reload();g.page.wait_for_function('()=>window.__test&&window.__test.MC');g.page.click('#menuB');assert 'ВЫКЛ' in g.page.inner_text('#vtog') and 'ВЫКЛ' in g.page.inner_text('#mtog')
     g.page.click('#bSnd') if g.page.is_visible('#bSnd') else None
 
 @pytest.mark.parametrize('vp',list(VPS))

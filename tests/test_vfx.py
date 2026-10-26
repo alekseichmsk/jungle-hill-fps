@@ -10,11 +10,11 @@ def test_lowres_target_size(make,vp):
 
 def test_graphics_toggle_cycles_and_persists(make):
     g=start(make,1);assert 'ВЫСОКО' in g.T('t.gtext')
-    g.page.click('#gtog');assert g.T('t.vfx.mode')=='dither'
+    g.page.click('#menuB');g.page.click('#pSet');g.page.click('#gtog');assert g.T('t.vfx.mode')=='dither'
     g.page.click('#gtog');assert g.T('t.vfx.mode')=='low' and g.T('t.vfx.rt===null')
     assert g.js('localStorage.h937_gfx')=='low'
     g.page.reload();g.page.wait_for_function('()=>window.__test&&window.__test.MC');assert g.T('t.vfx.mode')=='low' and 'НИЗКО' in g.T('t.gtext')
-    g.page.click('#gtog');assert g.T('t.vfx.mode')=='high' and g.T('t.vfx.rt!==null')
+    g.page.click('#menuB');g.page.click('#gtog');assert g.T('t.vfx.mode')=='high' and g.T('t.vfx.rt!==null')
     assert g.errors==[]
 
 def test_explosion_layers_light_and_cleanup(make):

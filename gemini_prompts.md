@@ -54,3 +54,9 @@
 32. "16-bit pixel art sprite sheet on solid magenta #FF00FF, NVA officer with pith helmet and pistol, 4 frames in a row: idle, walk, aim, shoot, side view, same scale, no text" → boss.png (миссии 5 и 8)
 33. "16-bit pixel art, UH-1 Huey helicopter side view, rotor blur, on solid magenta #FF00FF, no text" → huey.png (LZ миссии 7)
 34. "16-bit pixel art seamless tileable texture, bamboo plank walkway / stilt platform, top-down, no text" → tex_planks_m8.png
+
+## v5.1 — интегрировано
+- ✅ sky_m8.jpg (u7ih95), ✅ boss.png 3 кадра (cbhpsy), ✅ huey_side.png (k4zcvx), ✅ huey_front.png (wmicxn), ✅ tex_bamboo.jpg (tvmb3g), ✅ rpg.png v2 (lbpea6)
+- ✅ cs_lz.jpg (5ddj44, он же cs_intro.jpg), ✅ cs_night.jpg (6eljxe), ✅ cs_radio.jpg (x69kds), ✅ cs_napalm.jpg (mzgjq4)
+35. "16-bit pixel art sprite sheet on solid magenta #FF00FF, enemy soldier death, headless body falling, 4 frames, side view, no text" → m1_death_headless.png (сейчас голова отрезается в коде)
+36. "16-bit pixel art, M1911 Colt pistol first-person view, hands, idle + firing 2 frames on magenta" → colt_idle.png / colt_fire.png
