@@ -43,3 +43,14 @@
 ## Общее
 29. Generate an image: title screen key art for a retro FPS, a muddy shell-cratered jungle hill with bare tree stumps under a blood-red sky, silhouettes of an 8-man squad climbing, empty space at top for a logo, pixel art, 90s Doom/Blood style, limited palette, crisp hard pixels, no text, no watermark, 16:9 composition.
 30. Generate an image: 8 full-body squad member sprites in a row, American soldiers 1969 (sergeant, medic, M60 gunner, radio operator with backpack radio, sapper, sniper, flamethrower operator, corporal with M16), front view, same scale, pixel art, 90s Doom/Blood style, limited palette, crisp hard pixels, no text, no watermark, isolated on flat solid magenta #FF00FF background, no shadow on background.
+
+## v5.0 — новые ассеты (сгенерированы в чате «Vietnam Soldier Sprite») и что ещё нужно
+- ✅ US soldier sheet 4 кадра (idle/run/aim/fire), каска M1, M16, магента → sprites/us_rifleman.png
+- ✅ Jungle grass tileable texture → sprites/tex_grass.jpg; ✅ muddy trail → sprites/tex_trail.jpg
+- ✅ Misty morning sky over mountains → sky_m6.jpg; ✅ Sunset sky, smoke, burning hill, helicopters → sky_m7.jpg
+- ✅ Sandbags → sandbags_spr.png (+ crop sandbags.png); ✅ Tunnel hatch → hatch.png; ✅ Ammo crate → crate_spr.png (+ crop crate.png)
+- ✅ Bamboo hut on stilts → hut_stilts.png; ✅ NVA RPG soldier 2 frames (aim/fire) → rpg.png
+31. "16-bit pixel art panoramic sky, river village at noon in Vietnam, humid haze, distant green mountains, scattered clouds, wide 21:9, no ground objects, no text" → sky_m8.jpg
+32. "16-bit pixel art sprite sheet on solid magenta #FF00FF, NVA officer with pith helmet and pistol, 4 frames in a row: idle, walk, aim, shoot, side view, same scale, no text" → boss.png (миссии 5 и 8)
+33. "16-bit pixel art, UH-1 Huey helicopter side view, rotor blur, on solid magenta #FF00FF, no text" → huey.png (LZ миссии 7)
+34. "16-bit pixel art seamless tileable texture, bamboo plank walkway / stilt platform, top-down, no text" → tex_planks_m8.png

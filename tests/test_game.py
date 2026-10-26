@@ -1,13 +1,13 @@
 import os,pytest,urllib.request,re
 from conftest import BASE,VPS,start
-ALLOW={1:[0,3],2:[0,1,3,4],3:[0,1,2,3,4],4:[0,1,2,3,4],5:[0,1,2,3,4]}
-TITLES={1:'ТРОПА',2:'ПЕРЕПРАВА',3:'ДЕРЕВНЯ',4:'НОЧЬ',5:'ВЫСОТА 937'}
-VOICE=['brief_m1','brief_m2','brief_m3','brief_m4','brief_m5','hank_start_m1','hank_start_m2','hank_start_m3','hank_start_m4','hank_start_m5','hq_start','obj_done_1','obj_done_2','obj_done_3','marty_found','mg_down','boss_down','hurt','squad_down','win','win_m5','fail']
+ALLOW={1:[0,3],2:[0,1,3,4],3:[0,1,2,3,4],4:[0,1,2,3,4],5:[0,1,2,3,4],6:[0,1,2,3,4],7:[0,1,2,3,4],8:[0,1,2,3,4]}
+TITLES={1:'ТРОПА',2:'ПЕРЕПРАВА',3:'ДЕРЕВНЯ',4:'НОЧЬ',5:'ВЫСОТА 937',6:'ХРЕБЕТ',7:'ЗОНА ВЫСАДКИ',8:'ДЕРЕВНЯ НА СВАЯХ'}
+VOICE=['brief_m1','brief_m2','brief_m3','brief_m4','brief_m5','hank_start_m1','hank_start_m2','hank_start_m3','hank_start_m4','hank_start_m5','hq_start','obj_done_1','obj_done_2','obj_done_3','marty_found','mg_down','boss_down','hurt','squad_down','win','win_m5','fail','brief_m6','brief_m7','brief_m8','hank_start_m6','hank_start_m7','hank_start_m8','win_m8']
 SPRITES=['m1_rifleman','m1_rifleman_aim','m1_death','mg_nest','river','m60_idle','m60_fire','enemy','palm','corpse']
 
 def test_version_string():
     html=urllib.request.urlopen(BASE+'index.html?nc=1').read().decode()
-    assert re.search(r'concept v4\.\d',html),'version string missing'
+    assert re.search(r'concept v\d\.\d',html),'version string missing'
 
 @pytest.mark.parametrize('vp',list(VPS))
 def test_menu_no_console_errors(make,vp):
@@ -22,7 +22,7 @@ def test_menu_fits_screen(make,vp):
 @pytest.mark.parametrize('vp',['desktop720','phone'])
 def test_missions_screen(make,vp):
     g=make('',VPS[vp],{'h937_unlocked':'3'});g.page.click('#bMis');cards=g.page.locator('#panel .card')
-    assert cards.count()==5;assert g.page.locator('#panel .card.lock').count()==2
+    assert cards.count()==8;assert g.page.locator('#panel .card.lock').count()==5
     w,h=VPS[vp]
     for i in range(5):
         b=cards.nth(i).bounding_box();assert b['x']>=0 and b['x']+b['width']<=w+1
@@ -31,7 +31,7 @@ def test_missions_screen(make,vp):
 def test_squad_screen(make):
     g=make();g.page.click('#bSq');assert g.page.locator('#panel > *').count()>=8;assert 'ХЭНК' in g.page.inner_text('#panel')
 
-@pytest.mark.parametrize('m',[1,2,3,4,5])
+@pytest.mark.parametrize('m',[1,2,3,4,5,6,7,8])
 def test_mission_briefing_and_objectives(make,m):
     g=make(f'?m={m}&test=1');g.until('t.MC!=null')
     assert g.page.is_visible('#ov');assert TITLES[m] in g.page.inner_text('#ovb h1')
@@ -40,23 +40,23 @@ def test_mission_briefing_and_objectives(make,m):
     g.wait(500);assert g.page.is_visible('#obj');assert TITLES[m] in g.page.inner_text('#obj').upper()
     assert g.errors==[]
 
-@pytest.mark.parametrize('m',[1,2,3,4,5])
+@pytest.mark.parametrize('m',[1,2,3,4,5,6,7,8])
 def test_playthrough_win_and_unlock(make,m):
     g=start(make,m);g.T('t.god()')
     for _ in range(12):
         if g.T('t.over'):break
         g.T('t.completeCurrent()');g.wait(500)
     assert g.T('t.over') and g.T('t.oi')==g.T('t.MC.obj.length')
-    h1=g.page.inner_text('#ovb h1');assert h1==('ВЫСОТА ВЗЯТА!' if m==5 else 'МИССИЯ ВЫПОЛНЕНА'),h1
-    assert int(g.js('localStorage.h937_unlocked'))==min(5,m+1)
-    if m<5:assert g.page.is_visible('#ovNext')
+    h1=g.page.inner_text('#ovb h1');assert h1==({5:'ВЫСОТА ВЗЯТА!',8:'КАМПАНИЯ ЗАВЕРШЕНА'}.get(m,'МИССИЯ ВЫПОЛНЕНА')),h1
+    assert int(g.js('localStorage.h937_unlocked'))==min(8,m+1)
+    if m<8:assert g.page.is_visible('#ovNext')
     assert g.errors==[]
 
 def test_fail_screen(make):
     g=start(make,1);g.T('(t.P.hp=0,1)');g.until('t.over');assert g.page.inner_text('#ovb h1')=='ТЫ ПОГИБ'
     assert g.page.is_visible('#ovRe');assert (g.js('localStorage.h937_unlocked') or '1')=='1'
 
-@pytest.mark.parametrize('m',[1,2,3,4,5])
+@pytest.mark.parametrize('m',[1,2,3,4,5,6,7,8])
 def test_weapon_switching_allowed(make,m):
     g=start(make,m);g.T('t.freeze()')
     for k in range(5):

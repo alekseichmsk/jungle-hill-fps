@@ -1,7 +1,7 @@
 import pytest
 from conftest import start
 TRACK='''(()=>{window.__loops=[];const o=AudioBufferSourceNode.prototype.start;AudioBufferSourceNode.prototype.start=function(...a){if(this.loop)window.__loops.push(this);return o.apply(this,a)}})()'''
-@pytest.mark.parametrize('m',[1,2,3,4,5])
+@pytest.mark.parametrize('m',[1,2,3,4,5,6,7,8])
 def test_ally_sprites_loaded(make,m):
     g=start(make,m)
     r=g.T('t.allies.map(a=>{const mt=a.s.material,im=mt.map&&mt.map.image;return {ok:!!im&&im.width>24&&im.height>24,vis:a.s.visible&&mt.opacity>0,inScene:!!a.s.parent}})')
