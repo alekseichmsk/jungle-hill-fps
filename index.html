@@ -1,6 +1,6 @@
 <!DOCTYPE html><html lang="ru"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>Hamburger Hill — concept v4.4</title>
+<title>Hamburger Hill — concept v4.5</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;700&display=swap" rel="stylesheet">
 <style>
 html,body{margin:0;height:100%;overflow:hidden;background:#000;font-family:monospace;touch-action:none;user-select:none;-webkit-user-select:none}
@@ -130,7 +130,7 @@ text-shadow:0 4px 0 #5a0402,0 8px 0 #2a0000,4px 4px 0 #000,-4px 0 0 #ff4a20,8px 
 <div id="menu"><h1 id="logo">ВЫСОТА 937</h1><h2 id="sub2">HAMBURGER HILL</h2>
 <p id="intro">Долина Ашау, 1969. Командование называет её высотой 937. Мы зовём её просто холмом. Восемь человек. Три дня. Приказ — взять вершину. Никто не сказал, зачем.</p>
 <div id="items"><button id="start">В БОЙ</button><button id="bMis" class="mi">МИССИИ</button><button id="bSq" class="mi">ОТРЯД</button><button id="bSnd" class="mi">ЗВУК: ВКЛ</button></div>
-<div id="panel"></div><div id="ver">concept v4.4 · ПК: WASD + мышь, 1-5 оружие · Телефон: джойстик и свайп</div></div></div>
+<div id="panel"></div><div id="ver">concept v4.5 · ПК: WASD + мышь, 1-5 оружие · Телефон: джойстик и свайп</div></div></div>
 <script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js"}}</script>
 <script type="module">
 import * as THREE from 'three';
@@ -245,13 +245,13 @@ addEventListener('mouseup',()=>firing=false);addEventListener('contextmenu',e=>e
 addEventListener('mousemove',e=>{if(document.pointerLockElement){P.yaw-=e.movementX*.003;P.pitch=Math.max(-.6,Math.min(.6,P.pitch-e.movementY*.003))}});
 const joy=document.getElementById('joy'),knob=document.getElementById('knob');let jv={x:0,y:0},jid=null;
 function jmove(t){const r=joy.getBoundingClientRect();let dx=t.clientX-r.left-60,dy=t.clientY-r.top-60;const l=Math.hypot(dx,dy);if(l>50){dx*=50/l;dy*=50/l}jv={x:dx/50,y:dy/50};knob.style.left=35+dx+'px';knob.style.top=35+dy+'px'}
-joy.addEventListener('touchstart',e=>{e.preventDefault();jid=e.changedTouches[0].identifier;jmove(e.changedTouches[0])});
+joy.addEventListener('touchstart',e=>{e.preventDefault();if(jid!==null)return;jid=e.changedTouches[0].identifier;jmove(e.changedTouches[0])});
 joy.addEventListener('touchmove',e=>{e.preventDefault();for(const t of e.changedTouches)if(t.identifier===jid)jmove(t)});
-joy.addEventListener('touchend',e=>{jid=null;jv={x:0,y:0};knob.style.left=knob.style.top='35px'});
+const jend=e=>{if(![...e.changedTouches].some(t=>t.identifier===jid))return;jid=null;jv={x:0,y:0};knob.style.left=knob.style.top='35px'};joy.addEventListener('touchend',jend);joy.addEventListener('touchcancel',jend);
 const look=document.getElementById('look');let lid=null,lx=0,ly=0;
-look.addEventListener('touchstart',e=>{e.preventDefault();const t=e.changedTouches[0];lid=t.identifier;lx=t.clientX;ly=t.clientY});
+look.addEventListener('touchstart',e=>{e.preventDefault();if(lid!==null)return;const t=e.changedTouches[0];lid=t.identifier;lx=t.clientX;ly=t.clientY});
 look.addEventListener('touchmove',e=>{e.preventDefault();for(const t of e.changedTouches)if(t.identifier===lid){P.yaw-=(t.clientX-lx)*.006;P.pitch=Math.max(-.6,Math.min(.6,P.pitch-(t.clientY-ly)*.004));lx=t.clientX;ly=t.clientY}});
-look.addEventListener('touchend',()=>lid=null);
+const lend=e=>{if([...e.changedTouches].some(t=>t.identifier===lid))lid=null};look.addEventListener('touchend',lend);look.addEventListener('touchcancel',lend);
 function mdown(e){if(e.target.closest&&e.target.closest('button,#msg,#ov,#pause,#vctl,.btn,#hud'))return;if(!started||over||paused)return;try{const r=document.body.requestPointerLock?.();r&&r.catch&&r.catch(()=>{})}catch(_){}if(e.button==0||e.button==2)firing=true}
 document.addEventListener('mousedown',mdown);addEventListener('wheel',e=>{if(started&&!over&&!paused)cycleW(e.deltaY>0?1:-1)},{passive:true});
 let lockedOnce=false;document.addEventListener('pointerlockchange',()=>{if(document.pointerLockElement)lockedOnce=true;else{firing=false;if(lockedOnce&&started&&!over&&!paused){window.__lockPz=performance.now();setPause(true)}}});
@@ -261,7 +261,10 @@ pz.querySelector('#pRes').onclick=()=>{setPause(false);if(!coarse){try{const r=d
 pz.querySelector('#pGfx').onclick=()=>{document.getElementById('gtog')?.click();pz.querySelector('#pGfx').textContent=document.getElementById('gtog')?.textContent||'ГРАФИКА'};
 pz.querySelector('#pSnd').onclick=()=>document.getElementById('bSnd').click();
 pz.querySelector('#pMenu').onclick=()=>location.href=location.pathname+'?menu=missions';
-const fb=document.getElementById('fire');fb.addEventListener('touchstart',e=>{e.preventDefault();firing=true});fb.addEventListener('touchend',()=>firing=false);
+const fb=document.getElementById('fire');let fid=null,fx=0,fy=0;
+fb.addEventListener('touchstart',e=>{e.preventDefault();if(fid!==null)return;const t=e.changedTouches[0];fid=t.identifier;fx=t.clientX;fy=t.clientY;firing=true});
+fb.addEventListener('touchmove',e=>{e.preventDefault();for(const t of e.changedTouches)if(t.identifier===fid){P.yaw-=(t.clientX-fx)*.005;P.pitch=Math.max(-.6,Math.min(.6,P.pitch-(t.clientY-fy)*.0035));fx=t.clientX;fy=t.clientY}});
+const fend=e=>{if([...e.changedTouches].some(t=>t.identifier===fid)){fid=null;firing=false}};fb.addEventListener('touchend',fend);fb.addEventListener('touchcancel',fend);
 fb.addEventListener('mousedown',e=>{e.stopPropagation();firing=true});
 document.getElementById('wsw').addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();P.w=ALLOW[(ALLOW.indexOf(P.w)+1)%ALLOW.length]});
 const msg=document.getElementById('msg');
